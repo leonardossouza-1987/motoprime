@@ -97,7 +97,7 @@ Docs: http://localhost:8000/docs
 
 ## 👨‍💻 Autor
 
-**Leonardo S. Souza** · RA 88389823
+**Leonardo S. Souza** · 
 Curso Back-end · SENAI · 2026
 
 ---
