@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transações — MotoPrime</title>
+<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mpg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00e5a0"/>
+      <stop offset="1" stop-color="#00d4ff"/>
+    </linearGradient>
+  </defs>
+  <path d="M8 30 L8 10 L20 24 L32 10 L32 30" stroke="url(#mpg)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="32" cy="10" r="2.6" fill="#00e5a0"/>
+</svg></div>
+      <div class="logo-text"><span>MotoPrime</span><small>Concessionária</small></div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="avatar" id="avatar">?</div>
+        <div class="user-info-text">
+          <div class="user-name" id="uname">—</div>
+          <div class="user-role" id="urole">—</div>
+        </div>
+      </div>
+      <button class="nav-item" onclick="logout()"><span class="ico">↩</span><span>Sair</span></button>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Transações</h1>
+        <p class="page-sub">Vendas, devoluções e receitas</p>
+      </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="abrirDevolucao()">Devolução</button>
+        <button class="btn btn-primary" onclick="abrirVenda()">+ Nova venda</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span> Histórico de movimentações</div>
+      <div id="lista"></div>
+    </div>
+  </main>
+</div>
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="mTitle">Nova venda</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <form id="form" onsubmit="salvar(event)">
+      <div class="modal-body">
+        <div class="fg"><label>Cliente (CPF)</label><input id="f_cliente" maxlength="11" required></div>
+        <div class="fg"><label>Veículo</label><select id="f_veiculo" required></select></div>
+        <div class="fg"><label>Valor (R$)</label><input id="f_valor" type="number" step="0.01" required></div>
+        <div class="fg"><label>Descrição</label><input id="f_descricao"></div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Confirmar</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+var Auth = {
+  get token(){return localStorage.getItem('token')},
+  get cargo(){return localStorage.getItem('cargo')},
+  get nome(){return localStorage.getItem('nome')}
+};
+if(!Auth.token){ location.href='/'; }
+
+async function api(path, opt){
+  var headers = {'Content-Type':'application/json','Authorization':'Bearer '+Auth.token};
+  var r = await fetch(path, Object.assign({}, opt, {headers: headers}));
+  if(r.status===401){ localStorage.clear(); location.href='/'; return; }
+  if(r.status===204) return null;
+  var txt = await r.text();
+  var data = txt ? JSON.parse(txt) : null;
+  if(!r.ok) throw new Error((data && data.detail) || 'Erro '+r.status);
+  return data;
+}
+function toast(m,t){var e=document.createElement('div');e.className='toast '+(t||'');e.textContent=m;document.body.appendChild(e);setTimeout(function(){e.remove()},2800);}
+function initials(n){return (n||'?').split(' ').map(function(x){return x[0]}).slice(0,2).join('').toUpperCase();}
+function fmtMoney(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+function fmtDate(d){return d ? new Date(d).toLocaleDateString('pt-BR') : '—';}
+function fmtDT(d){return d ? new Date(d).toLocaleString('pt-BR') : '—';}
+function fmtNum(v){return Number(v||0).toLocaleString('pt-BR');}
+function logout(){ localStorage.clear(); location.href='/'; }
+
+function buildNav(active){
+  var c = Auth.cargo;
+  var items = [{icon:'◈',label:'Dashboard',href:'/dashboard'}];
+  var menus = [];
+  if(c==='adm'){
+    menus.push({icon:'◉',label:'Funcionários',href:'/funcionarios'});
+    menus.push({icon:'◆',label:'Veículos',href:'/veiculos'});
+    menus.push({icon:'◇',label:'Clientes',href:'/clientes'});
+    menus.push({icon:'▣',label:'Transações',href:'/transacoes'});
+    menus.push({icon:'⚙',label:'Ordens de Serviço',href:'/ordens'});
+  } else if(c==='vendedor'){
+    menus.push({icon:'◆',label:'Veículos',href:'/veiculos'});
+    menus.push({icon:'◇',label:'Clientes',href:'/clientes'});
+    menus.push({icon:'▣',label:'Transações',href:'/transacoes'});
+  } else if(c==='oficina'){
+    menus.push({icon:'◆',label:'Veículos',href:'/veiculos'});
+    menus.push({icon:'⚙',label:'Ordens de Serviço',href:'/ordens'});
+  }
+  items = items.concat(menus);
+  document.getElementById('nav').innerHTML = items.map(function(i){
+    var act = (i.href === active) ? 'active' : '';
+    return '<a class="nav-item '+act+'" href="'+i.href+'"><span class="ico">'+i.icon+'</span><span>'+i.label+'</span></a>';
+  }).join('');
+  document.getElementById('avatar').textContent = initials(Auth.nome);
+  document.getElementById('uname').textContent = Auth.nome || '—';
+  var roles = {adm:'Administrador',vendedor:'Vendedor',oficina:'Oficina'};
+  document.getElementById('urole').textContent = roles[Auth.cargo] || Auth.cargo;
+}
+function closeModal(){ var o = document.getElementById('overlay'); if(o) o.classList.remove('active'); }
+function openOverlay(){ var o = document.getElementById('overlay'); if(o) o.classList.add('active'); }
+
+
+var tipoAcao = 'venda';
+async function load(){
+  var el = document.getElementById('lista');
+  try {
+    var items = (Auth.cargo === 'adm') ? await api('/transacoes/') : await api('/transacoes/minhas');
+    if(!items.length){
+      el.innerHTML = '<div class="empty"><div class="icon">◌</div><h3>Nenhuma movimentação registrada</h3></div>';
+      return;
+    }
+    var rows = items.map(function(t){
+      var badge = t.tipo==='venda' ? 'badge-disponivel' : 'badge-reservado';
+      return '<tr>'+
+        '<td><span class="badge '+badge+'">'+t.tipo+'</span></td>'+
+        '<td><strong>'+fmtMoney(t.valor)+'</strong></td>'+
+        '<td class="mono">'+(t.cliente_cpf||'—')+'</td>'+
+        '<td class="mono">'+(t.veiculo_chassi||'—')+'</td>'+
+        '<td class="mono">'+(t.vendedor_cpf||'—')+'</td>'+
+        '<td>'+fmtDT(t.data)+'</td></tr>';
+    }).join('');
+    el.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Tipo</th><th>Valor</th><th>Cliente</th><th>Veículo</th><th>Vendedor</th><th>Data</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  } catch(e){
+    el.innerHTML = '<div class="empty"><div class="icon">◌</div><h3>'+e.message+'</h3></div>';
+  }
+}
+async function abrirVenda(){
+  tipoAcao = 'venda';
+  document.getElementById('mTitle').textContent = 'Nova venda';
+  document.getElementById('form').reset();
+  var veics = await api('/veiculos/');
+  var disp = veics.filter(function(v){return v.situacao==='disponivel';});
+  if(!disp.length){ toast('Nenhum veículo disponível', 'error'); return; }
+  document.getElementById('f_veiculo').innerHTML = disp.map(function(v){
+    return '<option value="'+v.chassi+'">'+v.marca+' '+v.modelo+' ('+v.ano+') — '+fmtMoney(v.preco)+'</option>';
+  }).join('');
+  openOverlay();
+}
+async function abrirDevolucao(){
+  tipoAcao = 'devolucao';
+  document.getElementById('mTitle').textContent = 'Nova devolução';
+  document.getElementById('form').reset();
+  var veics = await api('/veiculos/');
+  var vend = veics.filter(function(v){return v.situacao==='vendido';});
+  if(!vend.length){ toast('Nenhum veículo vendido para devolver', 'error'); return; }
+  document.getElementById('f_veiculo').innerHTML = vend.map(function(v){
+    return '<option value="'+v.chassi+'">'+v.marca+' '+v.modelo+' ('+v.ano+')</option>';
+  }).join('');
+  openOverlay();
+}
+async function salvar(e){
+  e.preventDefault();
+  var d = {
+    tipo: tipoAcao,
+    valor: parseFloat(document.getElementById('f_valor').value),
+    cliente_cpf: document.getElementById('f_cliente').value,
+    veiculo_chassi: document.getElementById('f_veiculo').value,
+    descricao: document.getElementById('f_descricao').value || null
+  };
+  try {
+    var url = tipoAcao === 'venda' ? '/transacoes/venda' : '/transacoes/devolucao';
+    await api(url, {method:'POST', body: JSON.stringify(d)});
+    toast(tipoAcao === 'venda' ? 'Venda registrada' : 'Devolução registrada');
+    closeModal(); load();
+  } catch(err){ toast(err.message, 'error'); }
+}
+buildNav('/transacoes'); load();
+
+</script>
+</body>
+</html>

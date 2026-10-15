@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — MotoPrime</title>
+<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mpg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00e5a0"/>
+      <stop offset="1" stop-color="#00d4ff"/>
+    </linearGradient>
+  </defs>
+  <path d="M8 30 L8 10 L20 24 L32 10 L32 30" stroke="url(#mpg)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="32" cy="10" r="2.6" fill="#00e5a0"/>
+</svg></div>
+      <div class="logo-text">
+        <span>MotoPrime</span>
+        <small>Concessionária</small>
+      </div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="avatar" id="avatar">?</div>
+        <div class="user-info-text">
+          <div class="user-name" id="uname">—</div>
+          <div class="user-role" id="urole">—</div>
+        </div>
+      </div>
+      <button class="nav-item" onclick="logout()"><span class="ico">↩</span><span>Sair</span></button>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Visão <strong>geral</strong></h1>
+        <p class="page-sub" id="welcome">—</p>
+      </div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot"></span> Últimas movimentações</div>
+      <div id="ultimas"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+var Auth = {
+  get token(){return localStorage.getItem('token')},
+  get cargo(){return localStorage.getItem('cargo')},
+  get nome(){return localStorage.getItem('nome')}
+};
+if(!Auth.token){ location.href='/'; }
+
+async function api(path){
+  var r = await fetch(path, {headers:{'Authorization':'Bearer '+Auth.token}});
+  if(r.status===401){ localStorage.clear(); location.href='/'; return []; }
+  if(!r.ok) throw new Error('Erro '+r.status);
+  return r.json();
+}
+function fmtMoney(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+function fmtDT(d){return d ? new Date(d).toLocaleString('pt-BR') : '—';}
+function initials(n){return (n||'?').split(' ').map(function(x){return x[0]}).slice(0,2).join('').toUpperCase();}
+function toast(m,t){var e=document.createElement('div');e.className='toast '+(t||'');e.textContent=m;document.body.appendChild(e);setTimeout(function(){e.remove()},2800);}
+function logout(){ localStorage.clear(); location.href='/'; }
+
+function buildNav(){
+  var c = Auth.cargo;
+  var items = [{icon:'◈',label:'Dashboard',href:'/dashboard',active:true}];
+  var menus = [];
+  if(c==='adm'){
+    menus.push({icon:'◉',label:'Funcionários',href:'/funcionarios'});
+    menus.push({icon:'◆',label:'Veículos',href:'/veiculos'});
+    menus.push({icon:'◇',label:'Clientes',href:'/clientes'});
+    menus.push({icon:'▣',label:'Transações',href:'/transacoes'});
+    menus.push({icon:'⚙',label:'Ordens de Serviço',href:'/ordens'});
+  } else if(c==='vendedor'){
+    menus.push({icon:'◆',label:'Veículos',href:'/veiculos'});
+    menus.push({icon:'◇',label:'Clientes',href:'/clientes'});
+    menus.push({icon:'▣',label:'Transações',href:'/transacoes'});
+  } else if(c==='oficina'){
+    menus.push({icon:'◆',label:'Veículos',href:'/veiculos'});
+    menus.push({icon:'⚙',label:'Ordens de Serviço',href:'/ordens'});
+  }
+  items = items.concat(menus);
+  document.getElementById('nav').innerHTML = items.map(function(i){
+    return '<a class="nav-item '+(i.active?'active':'')+'" href="'+i.href+'"><span class="ico">'+i.icon+'</span><span>'+i.label+'</span></a>';
+  }).join('');
+  document.getElementById('avatar').textContent = initials(Auth.nome);
+  document.getElementById('uname').textContent = Auth.nome || '—';
+  var roles = {adm:'Administrador',vendedor:'Vendedor',oficina:'Oficina'};
+  document.getElementById('urole').textContent = roles[Auth.cargo] || Auth.cargo;
+  document.getElementById('welcome').textContent = 'Bem-vindo de volta, ' + (Auth.nome || '') + '.';
+}
+
+async function loadStats(){
+  var cards = [];
+  try {
+    var veiculos = await api('/veiculos/');
+    var disp = veiculos.filter(function(v){return v.situacao==='disponivel';}).length;
+    cards.push('<div class="stat"><div class="stat-icon">◆</div><div class="stat-value">'+veiculos.length+'</div><div class="stat-label">Veículos no estoque</div></div>');
+    cards.push('<div class="stat"><div class="stat-icon">◉</div><div class="stat-value">'+disp+'</div><div class="stat-label">Disponíveis para venda</div></div>');
+  } catch(e){}
+  if(Auth.cargo==='vendedor'||Auth.cargo==='adm'){
+    try {
+      var clientes = await api('/clientes/');
+      cards.push('<div class="stat info"><div class="stat-icon">◇</div><div class="stat-value">'+clientes.length+'</div><div class="stat-label">Clientes cadastrados</div></div>');
+    } catch(e){}
+  }
+  if(Auth.cargo==='vendedor'){
+    try {
+      var minhas = await api('/transacoes/minhas');
+      var vendas = minhas.filter(function(t){return t.tipo==='venda';});
+      var total = vendas.reduce(function(s,t){return s + Number(t.valor);},0);
+      cards.push('<div class="stat"><div class="stat-icon">▣</div><div class="stat-value">'+vendas.length+'</div><div class="stat-label">Minhas vendas</div></div>');
+      cards.push('<div class="stat"><div class="stat-icon">$</div><div class="stat-value" style="font-size:24px">'+fmtMoney(total)+'</div><div class="stat-label">Total vendido</div></div>');
+    } catch(e){}
+  }
+  if(Auth.cargo==='oficina'){
+    try {
+      var os = await api('/ordens-servico/minhas');
+      var ab = os.filter(function(o){return o.status==='aberta';}).length;
+      cards.push('<div class="stat warning"><div class="stat-icon">⚙</div><div class="stat-value">'+ab+'</div><div class="stat-label">Minhas OS abertas</div></div>');
+    } catch(e){}
+  }
+  document.getElementById('stats').innerHTML = cards.join('') || '<div class="card"><div class="empty"><div class="icon">◌</div><h3>Sem dados para exibir</h3></div></div>';
+}
+
+async function loadUltimas(){
+  var el = document.getElementById('ultimas');
+  try {
+    var items = [];
+    if(Auth.cargo==='adm') items = await api('/transacoes/');
+    else if(Auth.cargo==='vendedor') items = await api('/transacoes/minhas');
+    if(!items.length){
+      el.innerHTML = '<div class="empty"><div class="icon">◌</div><h3>Nenhuma movimentação registrada</h3></div>';
+      return;
+    }
+    var rows = items.slice(0,8).map(function(t){
+      var badge = t.tipo==='venda' ? 'badge-disponivel' : 'badge-reservado';
+      return '<tr><td><span class="badge '+badge+'">'+t.tipo+'</span></td><td><strong>'+fmtMoney(t.valor)+'</strong></td><td>'+t.cliente_cpf+'</td><td class="mono">'+t.veiculo_chassi+'</td><td>'+fmtDT(t.data)+'</td></tr>';
+    }).join('');
+    el.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Tipo</th><th>Valor</th><th>Cliente</th><th>Veículo</th><th>Data</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  } catch(e){
+    el.innerHTML = '<div class="empty"><div class="icon">◌</div><h3>Sem permissão para ver movimentações</h3></div>';
+  }
+}
+
+buildNav();
+loadStats();
+loadUltimas();
+</script>
+</body>
+</html>

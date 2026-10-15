@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MotoPrime — Entre na sua conta</title>
+<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-mark"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mpg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00e5a0"/>
+      <stop offset="1" stop-color="#00d4ff"/>
+    </linearGradient>
+  </defs>
+  <path d="M8 30 L8 10 L20 24 L32 10 L32 30" stroke="url(#mpg)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="32" cy="10" r="2.6" fill="#00e5a0"/>
+</svg></div>
+    <h1>Moto<strong>Prime</strong></h1>
+    <p class="sub">Sistema de gestão para concessionária</p>
+
+    <div id="msg" class="login-error"></div>
+
+    <form id="f">
+      <div class="fg">
+        <label>CPF</label>
+        <input id="cpf" maxlength="11" placeholder="00000000000" required autocomplete="username">
+      </div>
+      <div class="fg">
+        <label>Senha</label>
+        <input id="senha" type="password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;font-size:14px">
+        Entrar →
+      </button>
+    </form>
+
+    <div class="login-hint">
+      Acesso demonstração<br>
+      <code>00000000000</code> · senha <code>admin123</code>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('f').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var cpf = document.getElementById('cpf').value.trim();
+  var senha = document.getElementById('senha').value;
+  var msg = document.getElementById('msg');
+  msg.textContent = '';
+  try {
+    var r = await fetch('/auth/login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: new URLSearchParams({username: cpf, password: senha})
+    });
+    if(!r.ok){ var err = await r.json(); throw new Error(err.detail || 'Erro ao entrar'); }
+    var d = await r.json();
+    localStorage.setItem('token', d.access_token);
+    localStorage.setItem('cargo', d.cargo);
+    localStorage.setItem('nome', d.nome);
+    msg.style.color = 'var(--accent)';
+    msg.textContent = 'Acesso autorizado. Redirecionando...';
+    setTimeout(function(){ location.href = '/dashboard'; }, 500);
+  } catch(err){
+    msg.style.color = 'var(--danger)';
+    msg.textContent = err.message;
+  }
+});
+</script>
+</body>
+</html>

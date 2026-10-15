@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordens de Serviço — MotoPrime</title>
+<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mpg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00e5a0"/>
+      <stop offset="1" stop-color="#00d4ff"/>
+    </linearGradient>
+  </defs>
+  <path d="M8 30 L8 10 L20 24 L32 10 L32 30" stroke="url(#mpg)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="32" cy="10" r="2.6" fill="#00e5a0"/>
+</svg></div>
+      <div class="logo-text"><span>MotoPrime</span><small>Concessionária</small></div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="avatar" id="avatar">?</div>
+        <div class="user-info-text">
+          <div class="user-name" id="uname">—</div>
+          <div class="user-role" id="urole">—</div>
+        </div>
+      </div>
+      <button class="nav-item" onclick="logout()"><span class="ico">↩</span><span>Sair</span></button>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Ordens de Serviço</h1>
+        <p class="page-sub">Serviços da oficina</p>
+      </div>
+            <button class="btn btn-primary" onclick="openModal()">+ Nova ordem</button>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span> Ordens de serviço</div>
+      <div id="lista"></div>
+    </div>
+  </main>
+</div>
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="mTitle">Nova ordem de serviço</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <form id="form" onsubmit="salvar(event)">
+      <div class="modal-body">
+        <div class="fg"><label>Descrição do serviço</label><textarea id="f_descricao" required></textarea></div>
+        <div class="form-row">
+          <div class="fg"><label>Cliente (CPF)</label><input id="f_cliente" maxlength="11" required></div>
+          <div class="fg"><label>Veículo (Chassi)</label><input id="f_veiculo" maxlength="17" required></div>
+        </div>
+        <div class="fg"><label>Valor estimado (R$)</label><input id="f_valor" type="number" step="0.01" value="0"></div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Abrir ordem</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+var Auth = {
+  get token(){return localStorage.getItem('token')},
+  get cargo(){return localStorage.getItem('cargo')},
+  get nome(){return localStorage.getItem('nome')}
+};
+if(!Auth.token){ location.href='/'; }
+
+async function api(path, opt){
+  var headers = {'Content-Type':'application/json','Authorization':'Bearer '+Auth.token};
+  var r = await fetch(path, Object.assign({}, opt, {headers: headers}));
+  if(r.status===401){ localStorage.clear(); location.href='/'; return; }
+  if(r.status===204) return null;
+  var txt = await r.text();
+  var data = txt ? JSON.parse(txt) : null;
+  if(!r.ok) throw new Error((data && data.detail) || 'Erro '+r.status);
+  return data;
+}
+function toast(m,t){var e=document.createElement('div');e.className='toast '+(t||'');e.textContent=m;document.body.appendChild(e);setTimeout(function(){e.remove()},2800);}
+function initials(n){return (n||'?').split(' ').map(function(x){return x[0]}).slice(0,2).join('').toUpperCase();}
+function fmtMoney(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+function fmtDate(d){return d ? new Date(d).toLocaleDateString('pt-BR') : '—';}
+function fmtDT(d){return d ? new Date(d).toLocaleString('pt-BR') : '—';}
+function fmtNum(v){return Number(v||0).toLocaleString('pt-BR');}
+function logout(){ localStorage.clear(); location.href='/'; }
+
+function buildNav(active){
+  var c = Auth.cargo;
+  var items = [{icon:'◈',label:'Dashboard',href:'/dashboard'}];
+  var menus = [];
+  if(c==='adm'){
+    menus.push({icon:'◉',label:'Funcionários',href:'/funcionarios'});
+    menus.push({icon:'◆',label:'Veículos',href:'/veiculos'});
+    menus.push({icon:'◇',label:'Clientes',href:'/clientes'});
+    menus.push({icon:'▣',label:'Transações',href:'/transacoes'});
+    menus.push({icon:'⚙',label:'Ordens de Serviço',href:'/ordens'});
+  } else if(c==='vendedor'){
+    menus.push({icon:'◆',label:'Veículos',href:'/veiculos'});
+    menus.push({icon:'◇',label:'Clientes',href:'/clientes'});
+    menus.push({icon:'▣',label:'Transações',href:'/transacoes'});
+  } else if(c==='oficina'){
+    menus.push({icon:'◆',label:'Veículos',href:'/veiculos'});
+    menus.push({icon:'⚙',label:'Ordens de Serviço',href:'/ordens'});
+  }
+  items = items.concat(menus);
+  document.getElementById('nav').innerHTML = items.map(function(i){
+    var act = (i.href === active) ? 'active' : '';
+    return '<a class="nav-item '+act+'" href="'+i.href+'"><span class="ico">'+i.icon+'</span><span>'+i.label+'</span></a>';
+  }).join('');
+  document.getElementById('avatar').textContent = initials(Auth.nome);
+  document.getElementById('uname').textContent = Auth.nome || '—';
+  var roles = {adm:'Administrador',vendedor:'Vendedor',oficina:'Oficina'};
+  document.getElementById('urole').textContent = roles[Auth.cargo] || Auth.cargo;
+}
+function closeModal(){ var o = document.getElementById('overlay'); if(o) o.classList.remove('active'); }
+function openOverlay(){ var o = document.getElementById('overlay'); if(o) o.classList.add('active'); }
+
+
+async function load(){
+  var el = document.getElementById('lista');
+  try {
+    var items = (Auth.cargo === 'adm') ? await api('/ordens-servico/') : await api('/ordens-servico/minhas');
+    if(!items.length){
+      el.innerHTML = '<div class="empty"><div class="icon">◌</div><h3>Nenhuma ordem registrada</h3></div>';
+      return;
+    }
+    var rows = items.map(function(o){
+      var badge = o.status==='aberta' ? 'badge-reservado' : 'badge-disponivel';
+      var acao = o.status==='aberta'
+        ? '<button class="btn btn-primary btn-sm" onclick="fecharOS('+o.id+')">Fechar</button>'
+        : '<span style="color:var(--text-mute);font-size:11px">'+fmtDT(o.data_fechamento)+'</span>';
+      return '<tr>'+
+        '<td class="mono">#'+o.id+'</td>'+
+        '<td>'+o.descricao+'</td>'+
+        '<td class="mono">'+o.cliente_cpf+'</td>'+
+        '<td class="mono">'+o.veiculo_chassi+'</td>'+
+        '<td><strong>'+fmtMoney(o.valor)+'</strong></td>'+
+        '<td><span class="badge '+badge+'">'+o.status+'</span></td>'+
+        '<td>'+acao+'</td></tr>';
+    }).join('');
+    el.innerHTML = '<div class="table-wrap"><table><thead><tr><th>#</th><th>Descrição</th><th>Cliente</th><th>Veículo</th><th>Valor</th><th>Status</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  } catch(e){
+    el.innerHTML = '<div class="empty"><div class="icon">◌</div><h3>'+e.message+'</h3></div>';
+  }
+}
+function openModal(){
+  document.getElementById('form').reset();
+  openOverlay();
+}
+async function salvar(e){
+  e.preventDefault();
+  var d = {
+    descricao: document.getElementById('f_descricao').value,
+    cliente_cpf: document.getElementById('f_cliente').value,
+    veiculo_chassi: document.getElementById('f_veiculo').value,
+    valor: parseFloat(document.getElementById('f_valor').value || 0)
+  };
+  try {
+    await api('/ordens-servico/', {method:'POST', body: JSON.stringify(d)});
+    toast('Ordem aberta');
+    closeModal(); load();
+  } catch(err){ toast(err.message, 'error'); }
+}
+async function fecharOS(id){
+  var v = prompt('Valor final do serviço (R$):');
+  if(v === null) return;
+  try {
+    await api('/ordens-servico/'+id+'/fechar', {method:'PUT', body: JSON.stringify({valor: parseFloat(v)})});
+    toast('Ordem fechada');
+    load();
+  } catch(err){ toast(err.message, 'error'); }
+}
+buildNav('/ordens'); load();
+
+</script>
+</body>
+</html>

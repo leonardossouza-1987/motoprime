@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clientes — MotoPrime</title>
+<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mpg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00e5a0"/>
+      <stop offset="1" stop-color="#00d4ff"/>
+    </linearGradient>
+  </defs>
+  <path d="M8 30 L8 10 L20 24 L32 10 L32 30" stroke="url(#mpg)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="32" cy="10" r="2.6" fill="#00e5a0"/>
+</svg></div>
+      <div class="logo-text"><span>MotoPrime</span><small>Concessionária</small></div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="avatar" id="avatar">?</div>
+        <div class="user-info-text">
+          <div class="user-name" id="uname">—</div>
+          <div class="user-role" id="urole">—</div>
+        </div>
+      </div>
+      <button class="nav-item" onclick="logout()"><span class="ico">↩</span><span>Sair</span></button>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Clientes</h1>
+        <p class="page-sub">Cadastro e gestão de clientes</p>
+      </div>
+            <button class="btn btn-primary" onclick="openModal()">+ Novo cliente</button>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span> Clientes cadastrados</div>
+      <div id="lista"></div>
+    </div>
+  </main>
+</div>
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="mTitle">Novo cliente</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <form id="form" onsubmit="salvar(event)">
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="fg"><label>CPF</label><input id="f_cpf" maxlength="11" required></div>
+          <div class="fg"><label>Telefone</label><input id="f_telefone" required></div>
+        </div>
+        <div class="form-row">
+          <div class="fg"><label>Nome</label><input id="f_nome" required></div>
+          <div class="fg"><label>Sobrenome</label><input id="f_sobrenome" required></div>
+        </div>
+        <div class="fg"><label>Nascimento</label><input id="f_data_nascimento" type="date" required></div>
+        <div class="fg"><label>E-mail</label><input id="f_email" type="email" required></div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+var Auth = {
+  get token(){return localStorage.getItem('token')},
+  get cargo(){return localStorage.getItem('cargo')},
+  get nome(){return localStorage.getItem('nome')}
+};
+if(!Auth.token){ location.href='/'; }
+
+async function api(path, opt){
+  var headers = {'Content-Type':'application/json','Authorization':'Bearer '+Auth.token};
+  var r = await fetch(path, Object.assign({}, opt, {headers: headers}));
+  if(r.status===401){ localStorage.clear(); location.href='/'; return; }
+  if(r.status===204) return null;
+  var txt = await r.text();
+  var data = txt ? JSON.parse(txt) : null;
+  if(!r.ok) throw new Error((data && data.detail) || 'Erro '+r.status);
+  return data;
+}
+function toast(m,t){var e=document.createElement('div');e.className='toast '+(t||'');e.textContent=m;document.body.appendChild(e);setTimeout(function(){e.remove()},2800);}
+function initials(n){return (n||'?').split(' ').map(function(x){return x[0]}).slice(0,2).join('').toUpperCase();}
+function fmtMoney(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+function fmtDate(d){return d ? new Date(d).toLocaleDateString('pt-BR') : '—';}
+function fmtDT(d){return d ? new Date(d).toLocaleString('pt-BR') : '—';}
+function fmtNum(v){return Number(v||0).toLocaleString('pt-BR');}
+function logout(){ localStorage.clear(); location.href='/'; }
+
+function buildNav(active){
+  var c = Auth.cargo;
+  var items = [{icon:'◈',label:'Dashboard',href:'/dashboard'}];
+  var menus = [];
+  if(c==='adm'){
+    menus.push({icon:'◉',label:'Funcionários',href:'/funcionarios'});
+    menus.push({icon:'◆',label:'Veículos',href:'/veiculos'});
+    menus.push({icon:'◇',label:'Clientes',href:'/clientes'});
+    menus.push({icon:'▣',label:'Transações',href:'/transacoes'});
+    menus.push({icon:'⚙',label:'Ordens de Serviço',href:'/ordens'});
+  } else if(c==='vendedor'){
+    menus.push({icon:'◆',label:'Veículos',href:'/veiculos'});
+    menus.push({icon:'◇',label:'Clientes',href:'/clientes'});
+    menus.push({icon:'▣',label:'Transações',href:'/transacoes'});
+  } else if(c==='oficina'){
+    menus.push({icon:'◆',label:'Veículos',href:'/veiculos'});
+    menus.push({icon:'⚙',label:'Ordens de Serviço',href:'/ordens'});
+  }
+  items = items.concat(menus);
+  document.getElementById('nav').innerHTML = items.map(function(i){
+    var act = (i.href === active) ? 'active' : '';
+    return '<a class="nav-item '+act+'" href="'+i.href+'"><span class="ico">'+i.icon+'</span><span>'+i.label+'</span></a>';
+  }).join('');
+  document.getElementById('avatar').textContent = initials(Auth.nome);
+  document.getElementById('uname').textContent = Auth.nome || '—';
+  var roles = {adm:'Administrador',vendedor:'Vendedor',oficina:'Oficina'};
+  document.getElementById('urole').textContent = roles[Auth.cargo] || Auth.cargo;
+}
+function closeModal(){ var o = document.getElementById('overlay'); if(o) o.classList.remove('active'); }
+function openOverlay(){ var o = document.getElementById('overlay'); if(o) o.classList.add('active'); }
+
+
+var editing = null, cache = [];
+async function load(){
+  var el = document.getElementById('lista');
+  try {
+    cache = await api('/clientes/');
+    if(!cache.length){
+      el.innerHTML = '<div class="empty"><div class="icon">◌</div><h3>Nenhum cliente cadastrado</h3></div>';
+      return;
+    }
+    var rows = cache.map(function(c){
+      return '<tr>'+
+        '<td><strong>'+c.nome+' '+c.sobrenome+'</strong></td>'+
+        '<td class="mono">'+c.cpf+'</td>'+
+        '<td>'+c.email+'</td>'+
+        '<td>'+c.telefone+'</td>'+
+        '<td>'+fmtDate(c.data_cadastro)+'</td>'+
+        '<td><div class="actions">'+
+          '<button class="btn btn-warning btn-icon" onclick="editar(\''+c.cpf+'\')">✎</button>'+
+          '<button class="btn btn-danger btn-icon" onclick="excluir(\''+c.cpf+'\')">✕</button>'+
+        '</div></td></tr>';
+    }).join('');
+    el.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Nome</th><th>CPF</th><th>E-mail</th><th>Telefone</th><th>Cadastro</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  } catch(e){
+    el.innerHTML = '<div class="empty"><div class="icon">◌</div><h3>'+e.message+'</h3></div>';
+  }
+}
+function editar(cpf){
+  var c = cache.filter(function(x){return x.cpf===cpf;})[0]; if(!c) return;
+  editing = cpf;
+  document.getElementById('mTitle').textContent = 'Editar cliente';
+  document.getElementById('f_cpf').value = c.cpf; document.getElementById('f_cpf').disabled = true;
+  document.getElementById('f_nome').value = c.nome;
+  document.getElementById('f_sobrenome').value = c.sobrenome;
+  document.getElementById('f_data_nascimento').value = c.data_nascimento;
+  document.getElementById('f_email').value = c.email;
+  document.getElementById('f_telefone').value = c.telefone;
+  openOverlay();
+}
+function openModal(){
+  editing = null;
+  document.getElementById('form').reset();
+  document.getElementById('f_cpf').disabled = false;
+  document.getElementById('mTitle').textContent = 'Novo cliente';
+  openOverlay();
+}
+async function salvar(e){
+  e.preventDefault();
+  var d = {
+    nome: document.getElementById('f_nome').value,
+    sobrenome: document.getElementById('f_sobrenome').value,
+    data_nascimento: document.getElementById('f_data_nascimento').value,
+    email: document.getElementById('f_email').value,
+    telefone: document.getElementById('f_telefone').value
+  };
+  try {
+    if(editing){
+      await api('/clientes/'+editing, {method:'PUT', body: JSON.stringify(d)});
+      toast('Cliente atualizado');
+    } else {
+      d.cpf = document.getElementById('f_cpf').value;
+      await api('/clientes/', {method:'POST', body: JSON.stringify(d)});
+      toast('Cliente cadastrado');
+    }
+    closeModal(); load();
+  } catch(err){ toast(err.message, 'error'); }
+}
+async function excluir(cpf){
+  if(!confirm('Excluir cliente '+cpf+'?')) return;
+  try { await api('/clientes/'+cpf, {method:'DELETE'}); toast('Cliente excluído'); load(); }
+  catch(err){ toast(err.message, 'error'); }
+}
+buildNav('/clientes'); load();
+
+</script>
+</body>
+</html>

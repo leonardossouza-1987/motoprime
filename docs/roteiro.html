@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MotoPrime — Roteiro · Leonardo Souza</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080c;
+  --bg-2:#0f0f16;
+  --card:rgba(255,255,255,0.03);
+  --border:rgba(255,255,255,0.08);
+  --border-2:rgba(255,255,255,0.16);
+  --text:#f5f5f7;
+  --text-dim:#a1a1aa;
+  --text-mute:#52525b;
+  --accent:#00e5a0;
+  --accent-2:#00d4ff;
+  --accent-glow:rgba(0,229,160,0.35);
+  --warn:#ffb547;
+  --danger:#ff4d6d;
+  --info:#60a5fa;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.7;
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(0,212,255,0.06), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(0,229,160,0.05), transparent 40%);
+  background-attachment:fixed;
+}
+code,pre,.mono{font-family:'JetBrains Mono',monospace}
+
+/* ================= LAYOUT ================= */
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+
+/* ================= SIDEBAR ================= */
+.sidebar{
+  background:rgba(10,10,15,0.9);
+  border-right:1px solid var(--border);
+  padding:24px 0;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+}
+.sidebar-header{padding:0 24px 20px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.sidebar-header .logo{
+  display:flex;align-items:center;gap:10px;
+  font-size:14px;font-weight:700;letter-spacing:-0.01em;
+  margin-bottom:4px;
+}
+.sidebar-header .logo-mark{
+  width:28px;height:28px;border-radius:8px;
+  background:linear-gradient(135deg,rgba(0,229,160,0.15),rgba(0,212,255,0.15));
+  border:1px solid rgba(0,229,160,0.3);
+  display:flex;align-items:center;justify-content:center;padding:5px;
+}
+.sidebar-header .logo-mark svg{width:100%;height:100%}
+.sidebar-header small{color:var(--text-mute);font-size:10px;letter-spacing:0.1em;text-transform:uppercase}
+
+.sidebar nav{display:flex;flex-direction:column;gap:1px;padding:0 12px}
+.sidebar nav a{
+  color:var(--text-dim);text-decoration:none;font-size:12.5px;
+  padding:8px 12px;border-radius:8px;
+  transition:all 0.15s;
+  display:flex;align-items:center;gap:10px;
+  border-left:2px solid transparent;
+}
+.sidebar nav a:hover{background:rgba(255,255,255,0.04);color:var(--text)}
+.sidebar nav a.active{background:rgba(0,229,160,0.08);color:var(--accent);border-left-color:var(--accent)}
+.sidebar nav a .num{
+  width:22px;font-size:10px;font-weight:700;
+  color:var(--text-mute);letter-spacing:0.05em;
+}
+
+/* ================= MAIN ================= */
+.main{padding:48px 64px;max-width:1000px}
+
+.page-title{
+  font-size:44px;font-weight:300;letter-spacing:-0.03em;line-height:1.1;
+  background:linear-gradient(180deg,#fff,#a1a1aa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:10px;
+}
+.page-title strong{font-weight:800}
+.page-sub{color:var(--text-dim);font-size:16px;margin-bottom:40px}
+
+.tip-box{
+  background:rgba(0,212,255,0.06);
+  border:1px solid rgba(0,212,255,0.2);
+  border-radius:12px;
+  padding:20px 24px;
+  margin-bottom:40px;
+  font-size:14px;
+  color:var(--text-dim);
+  line-height:1.7;
+}
+.tip-box strong{color:var(--accent-2)}
+
+/* ================= SLIDE SECTIONS ================= */
+.slide-section{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:32px 36px;
+  margin-bottom:32px;
+  scroll-margin-top:24px;
+}
+.slide-header{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:24px;padding-bottom:20px;
+  border-bottom:1px solid var(--border);
+  gap:20px;flex-wrap:wrap;
+}
+.slide-number{
+  font-size:12px;font-weight:700;letter-spacing:0.1em;
+  color:var(--accent);text-transform:uppercase;margin-bottom:6px;
+}
+.slide-title{
+  font-size:24px;font-weight:600;letter-spacing:-0.02em;
+  color:var(--text);
+}
+.slide-meta{
+  display:flex;gap:12px;font-size:12px;color:var(--text-mute);
+  flex-wrap:wrap;
+}
+.slide-meta .meta-item{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:999px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--border);
+}
+.slide-meta .meta-item strong{color:var(--text);font-weight:600}
+
+.roteiro{font-size:16px;line-height:1.8;color:var(--text-dim)}
+.roteiro p{margin-bottom:16px}
+.roteiro strong{color:var(--text);font-weight:600}
+.roteiro em{color:var(--accent);font-style:normal;font-weight:600}
+
+.fala{
+  background:rgba(0,229,160,0.05);
+  border-left:3px solid var(--accent);
+  padding:18px 24px;
+  margin:20px 0;
+  border-radius:0 12px 12px 0;
+  font-size:16px;
+  line-height:1.8;
+  color:var(--text);
+  font-style:italic;
+}
+.fala::before{
+  content:'🎤 "';
+  font-style:normal;
+  color:var(--accent);
+  font-weight:700;
+}
+.fala::after{
+  content:'"';
+  font-style:normal;
+  color:var(--accent);
+  font-weight:700;
+}
+
+.instrucao{
+  background:rgba(255,181,71,0.06);
+  border:1px solid rgba(255,181,71,0.2);
+  border-radius:12px;
+  padding:16px 20px;
+  margin:16px 0;
+  font-size:14px;
+  color:var(--text-dim);
+  display:flex;gap:12px;align-items:flex-start;
+}
+.instrucao .ico{font-size:20px;flex-shrink:0}
+.instrucao strong{color:var(--warn)}
+
+.dica{
+  background:rgba(96,165,250,0.06);
+  border:1px solid rgba(96,165,250,0.2);
+  border-radius:12px;
+  padding:16px 20px;
+  margin:16px 0;
+  font-size:14px;
+  color:var(--text-dim);
+  display:flex;gap:12px;align-items:flex-start;
+}
+.dica .ico{font-size:20px;flex-shrink:0}
+.dica strong{color:var(--info)}
+
+.aviso{
+  background:rgba(255,77,109,0.06);
+  border:1px solid rgba(255,77,109,0.2);
+  border-radius:12px;
+  padding:16px 20px;
+  margin:16px 0;
+  font-size:14px;
+  color:var(--text-dim);
+  display:flex;gap:12px;align-items:flex-start;
+}
+.aviso .ico{font-size:20px;flex-shrink:0}
+.aviso strong{color:var(--danger)}
+
+.example{
+  background:rgba(0,0,0,0.4);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:18px 22px;
+  margin:16px 0;
+  font-size:14px;
+  font-family:'JetBrains Mono',monospace;
+  color:var(--text-dim);
+  line-height:1.7;
+}
+.example .com{color:var(--text-mute);font-style:italic}
+
+ol,ul{margin:16px 0 16px 22px;color:var(--text-dim);line-height:1.9}
+ol li,ul li{margin-bottom:6px}
+ol li strong, ul li strong{color:var(--text)}
+
+.checklist{
+  list-style:none;margin-left:0;
+  display:grid;gap:8px;
+}
+.checklist li{
+  padding:10px 14px;
+  background:rgba(255,255,255,0.02);
+  border-radius:8px;
+  font-size:14px;
+  display:flex;align-items:center;gap:10px;
+}
+.checklist li::before{
+  content:'☐';
+  color:var(--text-mute);
+  font-size:16px;
+}
+
+/* Top bar */
+.topbar{
+  position:fixed;top:0;left:280px;right:0;
+  padding:12px 32px;
+  background:rgba(8,8,12,0.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  z-index:100;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:12px;color:var(--text-mute);
+}
+.topbar .time{font-weight:600;color:var(--text)}
+
+/* Print */
+@media print{
+  .sidebar,.topbar{display:none}
+  .layout{grid-template-columns:1fr}
+  .main{padding:20px}
+  body{background:white;color:black}
+  .slide-section{break-inside:avoid;border:1px solid #ddd}
+}
+
+@media(max-width:1024px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .topbar{left:0}
+  .main{padding:80px 20px 40px}
+  .page-title{font-size:32px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span>📖 Roteiro · Leonardo Souza · Back-end</span>
+  <span>Tempo estimado: <span class="time">12-15 minutos</span></span>
+</div>
+
+<div class="layout">
+
+<!-- ================================================== -->
+<!-- SIDEBAR                                              -->
+<!-- ================================================== -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="lgr" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#00e5a0"/><stop offset="1" stop-color="#00d4ff"/>
+          </linearGradient></defs>
+          <path d="M8 30 L8 10 L20 24 L32 10 L32 30" stroke="url(#lgr)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="32" cy="10" r="2.6" fill="#00e5a0"/>
+        </svg>
+      </div>
+      <span>Roteiro</span>
+    </div>
+    <small>Guia completo · slide por slide</small>
+  </div>
+  <nav id="nav">
+    <a href="#prep"><span class="num">00</span><span>Antes de começar</span></a>
+    <a href="#s1"><span class="num">01</span><span>Capa</span></a>
+    <a href="#s2"><span class="num">02</span><span>Agenda</span></a>
+    <a href="#s3"><span class="num">03</span><span>Contexto</span></a>
+    <a href="#s4"><span class="num">04</span><span>Problema</span></a>
+    <a href="#s5"><span class="num">05</span><span>Objetivo</span></a>
+    <a href="#s6"><span class="num">06</span><span>Perfis</span></a>
+    <a href="#s7"><span class="num">07</span><span>Arquitetura</span></a>
+    <a href="#s8"><span class="num">08</span><span>Fluxo requisição</span></a>
+    <a href="#s9"><span class="num">09</span><span>Backend — visão</span></a>
+    <a href="#s10"><span class="num">10</span><span>main.py</span></a>
+    <a href="#s11"><span class="num">11</span><span>database.py</span></a>
+    <a href="#s12"><span class="num">12</span><span>models.py</span></a>
+    <a href="#s13"><span class="num">13</span><span>schemas.py</span></a>
+    <a href="#s14"><span class="num">14</span><span>auth.py</span></a>
+    <a href="#s15"><span class="num">15</span><span>dependencies.py</span></a>
+    <a href="#s16"><span class="num">16</span><span>routers</span></a>
+    <a href="#s17"><span class="num">17</span><span>API REST</span></a>
+    <a href="#s18"><span class="num">18</span><span>Regras venda</span></a>
+    <a href="#s19"><span class="num">19</span><span>Frontend</span></a>
+    <a href="#s20"><span class="num">20</span><span>Demo ao vivo</span></a>
+    <a href="#s21"><span class="num">21</span><span>Checklist</span></a>
+    <a href="#s22"><span class="num">22</span><span>Conclusão</span></a>
+    <a href="#s23"><span class="num">23</span><span>Obrigado</span></a>
+    <a href="#qa"><span class="num">24</span><span>Perguntas da banca</span></a>
+    <a href="#final"><span class="num">★</span><span>Checklist final</span></a>
+  </nav>
+</aside>
+
+<!-- ================================================== -->
+<!-- MAIN CONTENT                                        -->
+<!-- ================================================== -->
+<main class="main">
+
+<h1 class="page-title">Roteiro da <strong>apresentação</strong></h1>
+<p class="page-sub">Fala sugerida para cada slide, em linguagem simples e direta.</p>
+
+<div class="tip-box">
+  <strong>💡 Como usar este roteiro:</strong> as caixas com borda verde contêm <strong>exatamente o que falar</strong>.
+  As caixas coloridas têm <strong>dicas de postura, tempo e o que fazer</strong>.
+  Leia tudo uma vez em voz alta antes de apresentar. Na hora, é só seguir o fluxo — não precisa decorar.
+</div>
+
+<!-- ================================================== -->
+<!-- PREPARAÇÃO                                          -->
+<!-- ================================================== -->
+<section class="slide-section" id="prep">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Antes de começar</div>
+      <div class="slide-title">🎬 Checklist dos 5 minutos finais</div>
+    </div>
+  </div>
+
+  <div class="aviso">
+    <span class="ico">⚠️</span>
+    <div>
+      <strong>Não abra o navegador antes da hora.</strong> Deixe o servidor rodando, mas o navegador fechado.
+      Você abre no momento da demo para dar impacto.
+    </div>
+  </div>
+
+  <p><strong>Rode isso no terminal, um comando por vez:</strong></p>
+
+  <div class="example">
+<span class="com"># 1. Verificar se o servidor está rodando</span>
+curl -s http://localhost:8000/ > /dev/null && echo "✓ Servidor OK" || echo "✗ Suba o servidor primeiro"
+
+<span class="com"># 2. Se não estiver rodando, suba</span>
+sudo systemctl start mysql && cd ~/motoprime && source venv/bin/activate && uvicorn app.main:app --port 8000 &
+
+<span class="com"># 3. Fechar tudo que não for necessário</span>
+<span class="com"># (navegador, spotify, slack, etc.)</span>
+  </div>
+
+  <ul class="checklist">
+    <li>Servidor rodando em http://localhost:8000</li>
+    <li>Apresentação HTML aberta em outra aba (F para tela cheia)</li>
+    <li>Este roteiro aberto (talvez em outra aba ou no celular)</li>
+    <li>Navegador com 3 abas prontas: login, /docs, /dashboard</li>
+    <li>Notificações do sistema silenciadas (modo "Não Perturbe")</li>
+    <li>Água do lado</li>
+    <li>Celular no silencioso</li>
+    <li>Cronômetro de 15 min pronto</li>
+  </ul>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Postura:</strong> fique em pé. Falar em pé transmite mais energia. Se a banca estiver sentada, você pode ficar sentado também — mas evite se encolher na cadeira.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 1 — CAPA                                      -->
+<!-- ================================================== -->
+<section class="slide-section" id="s1">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 01</div>
+      <div class="slide-title">Capa</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>30 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Apresentar-se</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    Boa tarde, pessoal! Meu nome é Leonardo Souza, e hoje vou apresentar o MotoPrime — um sistema
+    completo para gerenciar uma concessionária de motocicletas. Esse projeto foi desenvolvido
+    como trabalho final da disciplina de Integração de Competências, no curso de Back-end.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Nesse momento:</strong> olhe para a banca. Não olhe para a tela.
+      Apenas diga seu nome, o que vai apresentar, e passe para o próximo slide.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Tom de voz:</strong> confiante, mas não formal demais. É uma conversa, não um discurso.
+      Imagine que você está explicando para um amigo curioso.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 2 — AGENDA                                    -->
+<!-- ================================================== -->
+<section class="slide-section" id="s2">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 02</div>
+      <div class="slide-title">Agenda — o que vamos ver</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>20 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Mapear o caminho</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    Aqui está o que vamos ver. Vou começar contando o problema que motivou o projeto,
+    depois explicar como o sistema está organizado por dentro — com foco no backend —
+    e por fim mostrar o sistema funcionando de verdade na tela.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Aponte para os cards</strong> enquanto fala, mas rápido. É só para a banca saber
+      que a apresentação tem estrutura. Não leia cada card em voz alta.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Dica de ouro:</strong> diga "vou focar no backend" — isso prepara a banca para o que vai vir e mostra que você sabe priorizar o que é mais importante.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 3 — CONTEXTO                                  -->
+<!-- ================================================== -->
+<section class="slide-section" id="s3">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 03</div>
+      <div class="slide-title">Contexto — a ideia</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>15 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Introduzir tema</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    Antes de falar do sistema, deixa eu explicar o cenário. Uma concessionária de motos
+    lida com muitas coisas ao mesmo tempo: estoque de veículos, clientes, vendedores,
+    mecânicos, vendas, devoluções, ordens de serviço... Se isso tudo ficar em papel ou
+    planilha solta, vira bagunça.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Faça uma pausa curta depois dessa fala.</strong> Deixe a banca processar a lista
+      de coisas que uma concessionária lida.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 4 — PROBLEMA                                  -->
+<!-- ================================================== -->
+<section class="slide-section" id="s4">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 04</div>
+      <div class="slide-title">Problema — por que planilhas não bastam</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>30 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Justificar o projeto</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    O problema é esse: quando você controla tudo manualmente, aparecem erros de digitação,
+    ninguém sabe direito quantas motos estão disponíveis, não tem histórico de quem vendeu o quê,
+    e a oficina vira uma caixa preta — as ordens de serviço ficam em papel e se perdem.
+    A nossa solução foi criar um sistema web onde tudo isso fica centralizado, com segurança
+    e com cada pessoa vendo só o que precisa ver.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Enquanto fala dos problemas</strong>, vá apontando para os cards: "erros manuais",
+      "estoque caótico", "sem histórico", "oficina solta".
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Frase-chave:</strong> "cada pessoa vendo só o que precisa ver" — essa frase
+      resume o sistema em 7 palavras. Vai ecoar na cabeça da banca.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 5 — OBJETIVO                                  -->
+<!-- ================================================== -->
+<section class="slide-section" id="s5">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 05</div>
+      <div class="slide-title">Objetivo — o que o sistema faz</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>40 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Listar funcionalidades</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    O MotoPrime faz seis coisas principais: gerencia funcionários, gerencia veículos no estoque,
+    gerencia clientes, registra vendas, registra devoluções, e controla ordens de serviço.
+    Tudo isso com login seguro, cada cargo só acessa o que pode, e toda ação fica registrada no
+    histórico. Vou explicar como isso funciona por dentro na sequência.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Conte nos dedos se quiser.</strong> "Seis coisas principais: um, dois, três..." — 
+      isso prende atenção e ajuda você a não se perder.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 6 — PERFIS                                    -->
+<!-- ================================================== -->
+<section class="slide-section" id="s6">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 06</div>
+      <div class="slide-title">Três perfis, três visões</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>50 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Explicar RBAC</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    O grande diferencial do sistema é que ele tem três perfis de usuário. O administrador
+    tem acesso total — gerencia tudo. O vendedor cuida da parte comercial: cadastra clientes,
+    faz vendas e devoluções, e consulta o estoque para saber o que tem disponível. E o
+    mecânico, o pessoal da oficina, só mexe com ordens de serviço: abre, fecha e vê o
+    histórico dele. Nenhum perfil vê o que não é da sua função.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Aponte para cada card</strong> enquanto fala dos perfis: admin, vendedor, oficina.
+      Mencione que o menu lateral muda conforme o login — isso é visível na demo depois.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Termo técnico:</strong> isso se chama <strong>RBAC</strong> — Role-Based Access Control
+      (controle de acesso baseado em papéis). Você pode mencionar se quiser mostrar que sabe o nome técnico.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 7 — ARQUITETURA                               -->
+<!-- ================================================== -->
+<section class="slide-section" id="s7">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 07</div>
+      <div class="slide-title">Arquitetura em camadas</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>60 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Explicar organização</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    Agora entrando na parte mais técnica. O sistema está organizado em três camadas.
+    Em cima, o frontend — HTML, CSS e JavaScript puro — que roda no navegador do usuário.
+    No meio, o backend em FastAPI, que é o cérebro do sistema: recebe requisições, valida
+    segurança, aplica as regras de negócio e conversa com o banco. E embaixo, o MySQL, que
+    é onde tudo fica guardado. Cada camada tem sua responsabilidade, e isso facilita muito
+    dar manutenção depois.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Use as mãos para indicar</strong>: aponte pro topo (frontend), pro meio (backend),
+      e pra base (MySQL). Isso ajuda a banca a visualizar.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Se perguntarem "por que essa divisão?":</strong> "Cada camada tem uma responsabilidade única. 
+      Se o frontend muda, o backend não precisa mudar. Se o backend muda, o banco não muda. Isso se chama 
+      <strong>separação de responsabilidades</strong>."
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 8 — FLUXO                                     -->
+<!-- ================================================== -->
+<section class="slide-section" id="s8">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 08</div>
+      <div class="slide-title">Fluxo de uma requisição</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>60 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Mostrar como funciona na prática</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    Vou mostrar o caminho que uma requisição faz. Imagina que o vendedor clica em "listar veículos".
+    Primeiro, o navegador faz uma chamada HTTP com um token no cabeçalho. O FastAPI recebe, 
+    e a primeira coisa que ele faz é validar esse token — ver se é um usuário autenticado. 
+    Depois ele checa o cargo — será que esse usuário pode acessar isso? Se sim, os dados passam 
+    por validação de formato, entram na regra de negócio, vão pro SQLAlchemy que gera SQL, 
+    e o MySQL devolve a informação. Volta tudo pelo mesmo caminho e vira JSON na tela.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Siga os passos com o dedo</strong> acompanhando os quadradinhos na tela.
+      Fale devagar, é a parte mais importante do backend.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Frase-chave:</strong> "cada requisição passa por duas etapas de segurança: autenticação 
+      e autorização." Anote isso — vai voltar mais pra frente.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 9 — BACKEND VISÃO                             -->
+<!-- ================================================== -->
+<section class="slide-section" id="s9">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 09</div>
+      <div class="slide-title">Backend — visão geral</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>30 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Introduzir os arquivos</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    O backend está dividido em vários arquivos, cada um com uma responsabilidade clara. 
+    Isso ajuda a manter o código limpo. Vou explicar rapidamente o papel de cada um — depois 
+    entro em detalhe nos mais importantes.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Não leia o diagrama inteiro.</strong> Só mencione os 6 arquivos principais: 
+      main, database, models, schemas, auth, dependencies. Diga que os routers ficam numa pasta separada.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Metáfora:</strong> "Cada arquivo é como um setor de uma empresa. O database.py é a portaria, 
+      o models.py é o arquivo, o auth.py é o segurança, os routers são os atendentes."
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 10 — MAIN.PY                                  -->
+<!-- ================================================== -->
+<section class="slide-section" id="s10">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 10</div>
+      <div class="slide-title">main.py — o ponto de entrada</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>45 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Explicar o boot</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    O main.py é o arquivo que o servidor executa primeiro. Ele faz cinco coisas: cria as tabelas 
+    no banco se não existirem, instancia o FastAPI, monta os arquivos estáticos — o CSS, o HTML —, 
+    registra todos os routers da API, e por fim define as rotas que devolvem as páginas HTML. 
+    É como o manual de instruções do sistema — o Uvicorn lê esse arquivo e sobe tudo.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Aponte para as 5 partes do código</strong> enquanto fala: create_all, FastAPI(), 
+      mount, include_router e os @app.get.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Comando para citar:</strong> "Para subir o sistema, roda-se <code>uvicorn app.main:app</code> — 
+      ou seja, 'no módulo app/main.py, carrega a variável app'."
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 11 — DATABASE.PY                              -->
+<!-- ================================================== -->
+<section class="slide-section" id="s11">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 11</div>
+      <div class="slide-title">database.py — conexão com o MySQL</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>45 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Explicar engine e sessões</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    O database.py cuida da comunicação com o MySQL. Ele tem três peças principais: 
+    a Settings, que lê as variáveis do arquivo .env — tipo a senha do banco; 
+    a engine, que é o motor de conexão; e o SessionLocal, que cria uma sessão nova 
+    para cada requisição. Tem também a função get_db, que entrega uma sessão para cada 
+    rota e fecha quando termina — mesmo se der erro.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Se a banca perguntar sobre o yield:</strong> "O yield entrega a sessão e volta depois 
+      para fechar. É tipo emprestar um livro: você pega, usa, e devolve no final — 
+      o finally garante que sempre devolve."
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Detalhe para impressionar:</strong> "Usamos pool_pre_ping=True. Isso testa se a conexão 
+      está viva antes de usar — evita erro quando o MySQL derruba uma conexão ociosa."
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 12 — MODELS.PY                                -->
+<!-- ================================================== -->
+<section class="slide-section" id="s12">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 12</div>
+      <div class="slide-title">models.py — as 5 tabelas</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>70 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Explicar o banco em Python</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    Aqui está o coração do banco. O models.py define cinco tabelas: Funcionário, Cliente, 
+    Veículo, Transação e Ordem de Serviço. Cada classe Python vira uma tabela no MySQL — 
+    isso se chama ORM, object-relational mapping. A gente escreve em Python, o SQLAlchemy 
+    traduz para SQL.
+
+    Repara em alguns detalhes: o CPF é chave primária de funcionário e cliente, porque é 
+    único e natural do domínio. Já o veículo tem o chassi como chave primária — 17 caracteres, 
+    único no mundo. Usar chave natural em vez de criar um ID artificial é uma decisão de 
+    modelagem importante. Tem também os enums — tipo o cargo, que só aceita três valores: 
+    adm, vendedor ou oficina. Se alguém tentar cadastrar "gerente", o banco rejeita.
+
+    E tem as foreign keys: uma transação aponta para um cliente, um veículo e um vendedor. 
+    Isso garante que os dados sempre façam sentido — não tem como registrar uma venda 
+    para um cliente que não existe.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Essa é a fala mais longa da apresentação.</strong> Respire, fale devagar.
+      Se a banca te interromper com pergunta, ótimo — significa que estão engajados.
+      Responda e siga.
+    </div>
+  </div>
+
+  <div class="aviso">
+    <span class="ico">⚠️</span>
+    <div>
+      <strong>Cuidado:</strong> não fique lendo cada campo. Mencione só os <strong>nomes das tabelas</strong> 
+      e explique <strong>2 decisões de modelagem</strong>: chave natural e foreign keys. O resto é detalhe.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Se perguntarem "por que ORM e não SQL puro?":</strong> "Três motivos: (1) evita SQL injection 
+      automaticamente, (2) é mais produtivo — o SQLAlchemy gera os CREATE TABLE, INSERT, UPDATE, DELETE 
+      sozinho, (3) se amanhã eu quiser trocar MySQL por Postgres, só mudo a URL de conexão, o resto fica igual."
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 13 — SCHEMAS.PY                               -->
+<!-- ================================================== -->
+<section class="slide-section" id="s13">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 13</div>
+      <div class="slide-title">schemas.py — contratos de dados</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>50 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Explicar validação</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    O schemas.py define o formato dos dados. Cada endpoint da API tem um contrato: o que ele 
+    aceita receber e o que ele devolve. Isso é feito com Pydantic, que valida automaticamente. 
+    Por exemplo: o chassi precisa ter exatamente 17 caracteres, o e-mail precisa ser válido, 
+    a senha precisa ter no mínimo 6 caracteres. Se o cliente mandar errado, o FastAPI devolve 
+    HTTP 422 antes da rota até executar.
+
+    A gente tem quatro versões para cada entidade: Base, com os campos comuns; Create, para o 
+    POST; Update, com todos os campos opcionais; e Out, que é o formato de resposta. 
+    Repara que o Out de funcionário não tem o campo senha_hash — a senha nunca sai do servidor, 
+    nem em resposta de API.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Se perguntarem sobre "por que 4 versões?":</strong> "Porque cada contexto tem 
+      necessidades diferentes. Ao criar, a senha é obrigatória. Ao atualizar, todos os campos 
+      são opcionais — você pode querer mudar só o telefone. E na resposta, você nunca quer 
+      expor o hash da senha."
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Frase pra impactar:</strong> "Os schemas alimentam a documentação automática 
+      em /docs. A gente não precisa escrever documentação da API manualmente — o FastAPI gera 
+      sozinho a partir dos schemas."
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 14 — AUTH.PY                                  -->
+<!-- ================================================== -->
+<section class="slide-section" id="s14">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 14</div>
+      <div class="slide-title">auth.py — segurança e JWT</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>70 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Explicar autenticação</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    Esse é um dos arquivos mais importantes. Ele cuida da segurança. Tem duas partes: 
+    hash de senha e geração de token.
+
+    Primeiro, senhas. A gente nunca guarda a senha em texto puro. Usamos bcrypt, que é um 
+    algoritmo lento de propósito — isso dificulta ataques de força bruta. Cada hash tem um 
+    salt aleatório, então a mesma senha gera hashes diferentes.
+
+    Segundo, o token JWT. Imagina um crachá de balada: você mostra o RG uma vez no login, 
+    recebe um crachá, e depois só mostra o crachá — não precisa mostrar o RG de novo. 
+    O JWT é esse crachá digital. Ele tem três partes: header, payload e assinatura. 
+    No payload vai o CPF do usuário e o cargo. E a assinatura é feita com uma chave secreta 
+    que só o servidor tem.
+
+    Se alguém tentar falsificar o crachá mudando o cargo de vendedor para adm, a assinatura 
+    não bate e o servidor rejeita na hora. A função get_current_user faz esse trabalho: 
+    ela decodifica o token, valida a assinatura, checa se não expirou, busca o usuário no 
+    banco e devolve o objeto pronto para uso. Se qualquer coisa falhar, retorna 401 — 
+    não autenticado.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Essa é a fala que a banca vai lembrar.</strong> Use a analogia do crachá de balada. 
+      Se você só decorar uma analogia da apresentação toda, decore essa.
+    </div>
+  </div>
+
+  <div class="aviso">
+    <span class="ico">⚠️</span>
+    <div>
+      <strong>Se a banca te interromper com "mas e se alguém roubar o token?":</strong> 
+      "É por isso que usamos HTTPS e o token expira em 8 horas. E o payload do JWT não tem 
+      senha, só CPF e cargo. Mesmo se alguém interceptar, não consegue fazer nada além de 
+      usar por pouco tempo."
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Detalhe técnico para impressionar:</strong> "O JWT é stateless — o servidor não 
+      precisa guardar quem está logado. Isso permite escalar horizontalmente: com 1 servidor ou 
+      100, qualquer um valida o mesmo token só usando a chave secreta."
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 15 — DEPENDENCIES.PY                          -->
+<!-- ================================================== -->
+<section class="slide-section" id="s15">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 15</div>
+      <div class="slide-title">dependencies.py — autorização</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>40 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Explicar RBAC</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    O auth.py responde "quem é você?". O dependencies.py responde "você pode fazer isso?". 
+    Tem três funções: require_adm, require_vendedor e require_oficina. Cada uma chama o 
+    get_current_user para saber quem é o usuário, e depois checa se o cargo dele bate com 
+    o que a rota exige. Se não bate, retorna 403 — proibido.
+
+    Repara que ADM sempre passa em tudo, porque é superusuário. É tipo o gerente da loja — 
+    ele pode fazer qualquer coisa que os outros fazem.
+
+    Aqui está uma distinção importante: 401 e 403 são coisas diferentes. 401 significa 
+    "não sei quem você é" — token inválido. 403 significa "sei quem você é, mas você não 
+    pode fazer isso" — falta permissão.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Mostre a cascata:</strong> require_adm chama get_current_user, que chama jwt.decode, 
+      que chama query no banco. Se qualquer passo falha, para ali.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Frase-chave:</strong> "Autenticação é saber quem é. Autorização é saber se pode." 
+      Essa frase resume a diferença e impressiona.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 16 — ROUTERS                                  -->
+<!-- ================================================== -->
+<section class="slide-section" id="s16">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 16</div>
+      <div class="slide-title">routers/ — os endpoints da API</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>45 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Explicar organização</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    Os routers são onde as rotas da API são definidas. Cada arquivo cuida de uma área: 
+    auth_router cuida do login, funcionarios cuida do CRUD de funcionários, veiculos de 
+    veículos, clientes de clientes, transacoes de vendas e devoluções, e ordens_servico das 
+    ordens da oficina. Todos seguem o mesmo padrão: um prefixo — tipo /veiculos — uma tag 
+    para agrupar no Swagger, e as dependências de segurança em cada rota.
+
+    Se você olhar a rota de criar funcionário, ela tem Depends(require_adm). Isso significa 
+    que só passa quem for ADM. A proteção é aplicada por rota, de forma explícita — não dá 
+    para esquecer.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Se perguntarem sobre "por que separar em arquivos?":</strong> "Um router por domínio 
+      é o padrão de arquitetura limpa. Se eu tiver um bug em veículos, sei exatamente onde olhar. 
+      Se amanhã eu quiser adicionar um módulo de peças, crio um arquivo novo e pronto."
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 17 — API REST                                 -->
+<!-- ================================================== -->
+<section class="slide-section" id="s17">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 17</div>
+      <div class="slide-title">API REST — todos os endpoints</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>60 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Mostrar completude</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    Aqui está a API completa. Temos 21 endpoints no total, divididos em 6 grupos. 
+    Tudo segue o padrão REST: GET para listar, POST para criar, PUT para atualizar, 
+    DELETE para excluir.
+
+    Repara que cada endpoint tem uma indicação de quem pode acessar. Por exemplo, /veiculos 
+    no GET qualquer usuário logado pode chamar — porque vendedor e mecânico precisam consultar 
+    o estoque. Mas o POST e o DELETE só ADM pode.
+
+    Também tem endpoints especiais: /transacoes/minhas, que devolve só as vendas do vendedor 
+    logado; e /ordens-servico/minhas, que devolve só as OS do mecânico logado. Isso é 
+    importante porque garante que cada um vê só o que é seu.
+
+    E tem os códigos HTTP. 200 é sucesso, 201 é criado, 204 é excluído com sucesso, 400 é 
+    regra de negócio violada, 401 é não autenticado, 403 é sem permissão, 404 é não encontrado, 
+    422 é dado inválido.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Não leia todas as linhas das tabelas.</strong> É muita informação. Mencione os 
+      grupos, mencione os endpoints especiais, e explique os códigos HTTP. Pronto.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Diga isso:</strong> "Tudo isso está documentado automaticamente em /docs — 
+      e é lá que vocês podem testar qualquer endpoint sem escrever código." Isso prepara a demo.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 18 — REGRAS DE NEGÓCIO                        -->
+<!-- ================================================== -->
+<section class="slide-section" id="s18">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 18</div>
+      <div class="slide-title">Regra de negócio — a venda</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>60 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Mostrar lógica real</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    Quero destacar uma das regras mais importantes: como uma venda funciona por dentro. 
+    Quando o vendedor clica em "realizar venda", acontece o seguinte:
+
+    Primeiro, o sistema verifica se o cliente existe. Depois verifica se o veículo existe. 
+    Depois — e isso é crucial — verifica se o veículo está disponível. Se já estiver vendido, 
+    retorna erro 400.
+
+    Se passou tudo, cria a transação. E repara: o vendedor responsável é pego do token JWT, 
+    não vem do frontend. Isso é segurança — o vendedor não consegue fingir ser outro.
+
+    Depois vem a parte mais importante: o sistema muda a situação do veículo para "vendido" 
+    automaticamente. Isso garante que o mesmo veículo não pode ser vendido duas vezes.
+
+    E tudo isso acontece dentro de uma única transação SQL. Ou tudo funciona, ou nada funciona. 
+    Não dá para vender e depois dar erro na hora de marcar como vendido — ou os dois acontecem, 
+    ou nenhum.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Pausa dramática no "não vem do frontend".</strong> Isso é o tipo de detalhe de 
+      segurança que a banca adora. Mostra que você pensou em como evitar fraude.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Termo técnico:</strong> isso se chama <strong>atomicidade</strong> — ou tudo, ou nada. 
+      É uma das propriedades ACID dos bancos relacionais. Você pode mencionar para mostrar que sabe.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 19 — FRONTEND                                 -->
+<!-- ================================================== -->
+<section class="slide-section" id="s19">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 19</div>
+      <div class="slide-title">Frontend — design e menu dinâmico</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>40 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Mostrar cuidado visual</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    No frontend, optamos por HTML, CSS e JavaScript puro — sem frameworks. Isso mantém o 
+    sistema leve e demonstra domínio dos fundamentos.
+
+    O visual é inspirado em marcas como Tesla, BYD e NIO: fundo escuro quase preto, acentos 
+    em verde-limão e ciano, tipografia fina e moderna. É um design que passa a sensação de 
+    tecnologia e sofisticação.
+
+    E o menu lateral é dinâmico: quando o usuário loga como ADM, aparece o menu completo. 
+    Como vendedor, aparecem só as opções que ele pode usar. Como mecânico, idem. Mas atenção: 
+    isso é só experiência de usuário — a segurança real está no backend, que rejeita qualquer 
+    requisição sem permissão. Mesmo que alguém descubra a URL, não consegue acessar.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Se a banca não perguntar nada sobre design</strong>, essa fala pode ser encurtada 
+      para 20 segundos. Só mencione o "Tesla/BYD/NIO" e a parte de segurança do menu dinâmico.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 20 — DEMO                                     -->
+<!-- ================================================== -->
+<section class="slide-section" id="s20">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 20</div>
+      <div class="slide-title">Demonstração ao vivo</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>2-3 minutos</strong></span>
+      <span class="meta-item">🎯 <strong>Impacto visual</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    Agora chega de slide — vou mostrar o sistema funcionando de verdade.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Ações em sequência:</strong>
+    </div>
+  </div>
+
+  <ol>
+    <li><strong>Alterne para o navegador</strong> (Alt+Tab ou Cmd+Tab)</li>
+    <li><strong>Abra http://localhost:8000</strong></li>
+    <li><strong>Faça login como ADM</strong> (00000000000 / admin123)</li>
+    <li><strong>Aponte para o menu</strong>: "Repara que aparecem todas as opções"</li>
+    <li><strong>Vá em Veículos</strong>: "Aqui está o estoque com 5 motos"</li>
+    <li><strong>Clique em "+ Novo veículo"</strong>: preencha e salve</li>
+    <li><strong>Faça logout</strong> (volte para o login)</li>
+    <li><strong>Faça login como Vendedor</strong> (11111111111 / venda123)</li>
+    <li><strong>Aponte para o menu</strong>: "Olha como mudou — agora só tem veículos, clientes e transações"</li>
+    <li><strong>Vá em Transações</strong> → "Vou fazer uma venda"</li>
+    <li><strong>Realize uma venda</strong></li>
+    <li><strong>Volte para o slide</strong></li>
+  </ol>
+
+  <div class="aviso">
+    <span class="ico">⚠️</span>
+    <div>
+      <strong>Se a demo falhar:</strong> mantenha a calma. Diga "vou reiniciar o servidor" 
+      e faça. Se demorar mais de 30 segundos, pule para prints que você tenha feito de backup. 
+      A banca entende imprevistos — o que não pode é entrar em pânico.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Narre o tempo todo</strong> enquanto clica: "Clicando em Novo Veículo, o sistema 
+      abre um modal. Digito o chassi de 17 caracteres, a marca... e clico em Salvar. 
+      Olha como o veículo aparece na lista." Narrar mantém a banca engajada.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 21 — CHECKLIST                                -->
+<!-- ================================================== -->
+<section class="slide-section" id="s21">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 21</div>
+      <div class="slide-title">Checklist de requisitos</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>30 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Fechar requisitos</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    Voltando aos slides. Aqui está o checklist do que foi pedido no trabalho. 
+    Todos os requisitos foram atendidos. Cada perfil tem acesso exatamente ao que 
+    foi especificado, e o CPF é chave primária, como pedido.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Passe rápido.</strong> A banca já viu o sistema funcionando. Não precisa ler linha 
+      por linha — só confirme que está tudo lá e siga.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 22 — CONCLUSÃO                                -->
+<!-- ================================================== -->
+<section class="slide-section" id="s22">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 22</div>
+      <div class="slide-title">Aprendizados</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>30 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Humildade + técnica</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    Esse projeto me ensinou muita coisa. Aprendi a construir uma API REST de verdade com 
+    FastAPI, a modelar um banco relacional pensando em chaves naturais e integridade, a 
+    implementar autenticação com JWT e bcrypt — coisas que eu não sabia fazer antes. 
+    Aprendi também a importância de arquitetura limpa: separar responsabilidades faz 
+    toda a diferença quando o projeto cresce.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Fale com sinceridade.</strong> Se você realmente aprendeu, diga. Se alguma coisa 
+      foi difícil, mencione. Bancas valorizam honestidade mais do que perfeição.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Se o tempo estiver apertado,</strong> pule esse slide. Vá direto para o "Obrigado".
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- SLIDE 23 — OBRIGADO                                 -->
+<!-- ================================================== -->
+<section class="slide-section" id="s23">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Slide 23</div>
+      <div class="slide-title">Obrigado!</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">⏱ <strong>10 segundos</strong></span>
+      <span class="meta-item">🎯 <strong>Encerrar</strong></span>
+    </div>
+  </div>
+
+  <div class="fala">
+    É isso. Obrigado pela atenção. Fico à disposição para perguntas.
+  </div>
+
+  <div class="instrucao">
+    <span class="ico">👉</span>
+    <div>
+      <strong>Olhe para a banca e aguarde.</strong> Não fale mais nada. Deixe o silêncio.
+      Quem pergunta primeiro é a banca.
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Postura nas perguntas:</strong> se não souber, diga "Não sei responder isso agora, 
+      mas posso pesquisar e te retorno." É melhor do que inventar.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- PERGUNTAS DA BANCA                                  -->
+<!-- ================================================== -->
+<section class="slide-section" id="qa">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Preparação</div>
+      <div class="slide-title">Perguntas que a banca pode fazer</div>
+    </div>
+    <div class="slide-meta">
+      <span class="meta-item">🎯 <strong>Decore as 5 principais</strong></span>
+    </div>
+  </div>
+
+  <p><strong>Se você decorar só 5 respostas, decore essas:</strong></p>
+
+  <h3 style="font-size:16px;font-weight:600;color:var(--accent);margin:24px 0 12px">1. O que é JWT e por que vocês usaram?</h3>
+  <div class="fala">
+    JWT é um crachá digital que o servidor dá ao usuário depois do login. Ele contém o CPF 
+    e o cargo do usuário, assinado com uma chave secreta que só o servidor tem. Usamos porque 
+    é stateless — o servidor não precisa guardar quem está logado. Cada requisição o usuário 
+    manda o token e o servidor valida na hora. E se alguém tentar alterar o cargo no token, 
+    a assinatura não bate e o servidor rejeita.
+  </div>
+
+  <h3 style="font-size:16px;font-weight:600;color:var(--accent);margin:24px 0 12px">2. Como vocês garantem que o usuário só acessa o que pode?</h3>
+  <div class="fala">
+    Duas camadas. A primeira é a autenticação: a função get_current_user valida o token JWT 
+    em toda requisição. A segunda é a autorização: as dependências require_adm, require_vendedor 
+    e require_oficina checam o cargo do usuário antes de cada rota executar. Se o cargo não 
+    bate, retorna 403. Além disso, no frontend o menu muda conforme o cargo — mas a segurança 
+    de verdade está no backend.
+  </div>
+
+  <h3 style="font-size:16px;font-weight:600;color:var(--accent);margin:24px 0 12px">3. Por que CPF como chave primária?</h3>
+  <div class="fala">
+    Porque é o identificador natural do domínio. É único por lei, estável, e todo mundo no 
+    sistema conhece. Não precisa criar um ID artificial. Já para veículos usamos chassi, que 
+    também é único no mundo — 17 caracteres. E para transações e ordens de serviço usamos ID 
+    auto-incremento, porque são eventos que podem ter vários por cliente.
+  </div>
+
+  <h3 style="font-size:16px;font-weight:600;color:var(--accent);margin:24px 0 12px">4. Por que FastAPI e não Flask ou Django?</h3>
+  <div class="fala">
+    FastAPI tem três vantagens: primeira, validação automática com Pydantic — se o cliente 
+    manda dados errados, o FastAPI rejeita antes de chegar na rota. Segunda, documentação 
+    automática: o Swagger em /docs é gerado sozinho a partir dos schemas. Terceira, performance — 
+    é um dos frameworks Python mais rápidos, por causa do suporte nativo a async. Flask exigiria 
+    mais código manual; Django é mais pesado e opinativo.
+  </div>
+
+  <h3 style="font-size:16px;font-weight:600;color:var(--accent);margin:24px 0 12px">5. O que acontece se dois vendedores tentarem vender o mesmo veículo?</h3>
+  <div class="fala">
+    O backend valida antes. Na função de venda, antes de criar a transação, ele checa se 
+    a situacao do veículo é "disponivel". Se já foi vendido, retorna erro 400. Como o commit 
+    no banco é atômico, não tem como dar corrida — se o primeiro vendedor já mudou o status 
+    para "vendido", o segundo recebe erro na hora.
+  </div>
+
+  <h3 style="font-size:16px;font-weight:600;color:var(--accent);margin:24px 0 12px">Outras perguntas prováveis:</h3>
+  <ul>
+    <li><strong>"Por que bcrypt e não MD5?"</strong> → "MD5 é rápido, o que é ruim para senhas. bcrypt é lento de propósito — testa centenas de senhas por segundo em vez de milhões. E tem salt aleatório."</li>
+    <li><strong>"O que é ORM?"</strong> → "Object-Relational Mapping. Você escreve Python, ele traduz para SQL. Segurança contra injection e produtividade."</li>
+    <li><strong>"Como vocês testam a API?"</strong> → "Três formas: Swagger em /docs, o frontend real, e REST Client do VSCode com um arquivo de requisições pronto."</li>
+    <li><strong>"O sistema é responsivo?"</strong> → "Sim, o CSS usa grid e media queries. Em telas pequenas, o menu lateral é ocultado e o conteúdo vira uma coluna."</li>
+    <li><strong>"O que vocês fariam diferente se tivessem mais tempo?"</strong> → "Adicionar testes automatizados com pytest, gerar contratos de venda em PDF, enviar e-mail de confirmação, e fazer deploy em nuvem com Docker."</li>
+  </ul>
+
+  <div class="aviso">
+    <span class="ico">⚠️</span>
+    <div>
+      <strong>Se a banca perguntar algo que você não sabe:</strong> não invente. Diga 
+      "Boa pergunta — não sei responder agora, mas posso pesquisar e te retorno." Isso é 
+      muito melhor do que dar uma resposta errada. Bancas valorizam honestidade.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- CHECKLIST FINAL                                     -->
+<!-- ================================================== -->
+<section class="slide-section" id="final">
+  <div class="slide-header">
+    <div>
+      <div class="slide-number">Antes de entrar</div>
+      <div class="slide-title">★ Checklist final</div>
+    </div>
+  </div>
+
+  <ul class="checklist">
+    <li>Servidor rodando (curl responde OK)</li>
+    <li>MySQL ativo</li>
+    <li>3 contas de teste funcionando</li>
+    <li>Apresentação HTML aberta</li>
+    <li>F na apresentação para fullscreen</li>
+    <li>Navegador pronto na tela de login</li>
+    <li>Notificações silenciadas</li>
+    <li>Celular no silencioso</li>
+    <li>Água por perto</li>
+    <li>Este roteiro aberto em outra aba ou no celular</li>
+    <li>Cronômetro pronto</li>
+    <li>Postura: costas retas, ombros soltos, contato visual</li>
+  </ul>
+
+  <div class="tip-box mt-2" style="margin-top:24px">
+    <strong>🎯 A regra de ouro:</strong> você construiu um sistema completo do zero. 
+    Isso já é uma conquista enorme. Na hora da apresentação, respire fundo, sorria, 
+    e conte a história do seu projeto como se estivesse contando para um amigo. 
+    Você sabe mais sobre esse sistema do que qualquer pessoa na sala.
+    <br><br>
+    <strong>Boa sorte! 🏍️</strong>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+// Marca o item ativo no menu conforme scroll
+const sections = document.querySelectorAll('.slide-section');
+const navLinks = document.querySelectorAll('.sidebar nav a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 200) {
+      current = section.getAttribute('id');
+    }
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+});
+
+// Clique suave
+document.querySelectorAll('.sidebar nav a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) target.scrollIntoView({behavior: 'smooth', block: 'start'});
+  });
+});
+</script>
+
+</body>
+</html>

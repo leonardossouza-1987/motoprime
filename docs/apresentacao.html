@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MotoPrime — Apresentação · Leonardo Souza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080c;
+  --bg-2:#0f0f16;
+  --card:rgba(255,255,255,0.03);
+  --card-hover:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.08);
+  --border-2:rgba(255,255,255,0.16);
+  --text:#f5f5f7;
+  --text-dim:#a1a1aa;
+  --text-mute:#52525b;
+  --accent:#00e5a0;
+  --accent-2:#00d4ff;
+  --accent-glow:rgba(0,229,160,0.35);
+  --danger:#ff4d6d;
+  --warning:#ffb547;
+  --info:#60a5fa;
+}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(0,212,255,0.10), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(0,229,160,0.08), transparent 40%);
+  background-attachment:fixed;
+}
+code,.mono,pre{font-family:'JetBrains Mono','Monaco','Consolas',monospace}
+
+/* ---------- Layout ---------- */
+.deck{height:100vh;position:relative;overflow:hidden}
+.slide{
+  position:absolute;
+  inset:0;
+  padding:60px 80px;
+  display:none;
+  flex-direction:column;
+  overflow-y:auto;
+  animation:slideIn 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.slide.active{display:flex}
+@keyframes slideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+/* ---------- Header ---------- */
+.topbar{
+  position:fixed;top:0;left:0;right:0;
+  padding:20px 32px;
+  display:flex;justify-content:space-between;align-items:center;
+  z-index:100;
+  pointer-events:none;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;font-weight:600;letter-spacing:0.05em;
+  text-transform:uppercase;color:var(--text-mute);
+  pointer-events:auto;
+}
+.brand-mark{
+  width:24px;height:24px;
+  border-radius:6px;
+  background:linear-gradient(135deg,rgba(0,229,160,0.15),rgba(0,212,255,0.15));
+  border:1px solid rgba(0,229,160,0.3);
+  display:flex;align-items:center;justify-content:center;
+  padding:4px;
+}
+.brand-mark svg{width:100%;height:100%}
+.counter{
+  font-size:12px;color:var(--text-mute);
+  font-weight:600;letter-spacing:0.08em;
+  padding:8px 14px;border-radius:999px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--border);
+  pointer-events:auto;
+}
+
+/* ---------- Footer / nav ---------- */
+.nav{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:999px;
+  background:rgba(15,15,22,0.85);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border-2);
+  box-shadow:0 20px 40px rgba(0,0,0,0.5);
+  z-index:100;
+}
+.nav button{
+  background:transparent;border:none;cursor:pointer;
+  color:var(--text-dim);font-family:inherit;font-size:14px;
+  padding:8px 12px;border-radius:8px;
+  transition:all 0.2s;
+  display:flex;align-items:center;gap:6px;
+}
+.nav button:hover{background:var(--card-hover);color:var(--text)}
+.nav button.primary{background:var(--accent);color:var(--bg);font-weight:600}
+.nav button.primary:hover{box-shadow:0 0 20px var(--accent-glow)}
+.progress{
+  width:120px;height:3px;border-radius:999px;
+  background:rgba(255,255,255,0.1);overflow:hidden;
+}
+.progress > div{
+  height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  width:0%;transition:width 0.3s ease;
+}
+
+/* ---------- Tipografia ---------- */
+h1{
+  font-size:64px;font-weight:300;letter-spacing:-0.04em;line-height:1.05;
+  background:linear-gradient(180deg,#fff,#a1a1aa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:16px;
+}
+h1 strong{font-weight:800}
+h2{
+  font-size:44px;font-weight:300;letter-spacing:-0.03em;line-height:1.1;
+  background:linear-gradient(180deg,#fff,#a1a1aa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:12px;
+}
+h2 strong{font-weight:700}
+h3{font-size:20px;font-weight:600;letter-spacing:-0.02em;margin-bottom:10px}
+h4{font-size:14px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.sub{font-size:18px;color:var(--text-dim);font-weight:300;max-width:900px;line-height:1.5}
+.lead{font-size:20px;color:var(--text-dim);font-weight:300;line-height:1.6;max-width:900px;margin-bottom:32px}
+
+/* ---------- Elements ---------- */
+.tag{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:999px;
+  background:rgba(0,229,160,0.1);color:var(--accent);
+  font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
+  margin-bottom:20px;
+}
+.tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:28px;
+  backdrop-filter:blur(10px);
+  transition:all 0.3s;
+}
+.card:hover{border-color:var(--border-2);background:var(--card-hover)}
+.card .ico{font-size:24px;margin-bottom:14px;opacity:0.9}
+.card h3{color:var(--text);margin-bottom:10px}
+.card p{color:var(--text-dim);font-size:14px;line-height:1.6}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+
+pre.code{
+  background:rgba(0,0,0,0.5);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px 24px;
+  font-size:13px;
+  line-height:1.7;
+  overflow-x:auto;
+  color:#e4e4e7;
+}
+pre.code .kw{color:#c084fc}
+pre.code .str{color:#86efac}
+pre.code .com{color:#52525b;font-style:italic}
+pre.code .fn{color:#67e8f9}
+pre.code .num{color:#fbbf24}
+pre.code .cls{color:#fde047}
+
+.kw{color:#c084fc}
+.str{color:#86efac}
+.com{color:#52525b;font-style:italic}
+.fn{color:#67e8f9}
+.cls{color:#fde047}
+
+/* ---------- Diagramas ---------- */
+.diagram{
+  background:rgba(0,0,0,0.4);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:32px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;
+  line-height:1.7;
+  overflow-x:auto;
+  color:#e4e4e7;
+  white-space:pre;
+}
+
+.flow{
+  display:flex;align-items:center;gap:16px;
+  flex-wrap:wrap;
+  margin:24px 0;
+}
+.flow-step{
+  padding:14px 18px;border-radius:12px;
+  background:var(--card);border:1px solid var(--border);
+  font-size:13px;font-weight:500;
+  display:flex;flex-direction:column;gap:4px;
+  min-width:140px;
+}
+.flow-step small{color:var(--text-mute);font-size:10px;text-transform:uppercase;letter-spacing:0.08em}
+.flow-arrow{color:var(--accent);font-size:20px}
+
+/* ---------- Tables ---------- */
+table{
+  width:100%;border-collapse:collapse;font-size:14px;
+  background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;
+}
+th{
+  text-align:left;padding:14px 18px;
+  font-size:11px;text-transform:uppercase;letter-spacing:0.08em;
+  color:var(--text-mute);font-weight:600;
+  background:rgba(0,0,0,0.3);
+  border-bottom:1px solid var(--border);
+}
+td{padding:14px 18px;border-bottom:1px solid var(--border);color:var(--text-dim)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.02)}
+td strong{color:var(--text)}
+.tag-ok{color:var(--accent)}
+.tag-no{color:var(--text-mute)}
+
+.badge{
+  display:inline-block;padding:3px 10px;border-radius:999px;
+  font-size:11px;font-weight:600;letter-spacing:0.04em;
+}
+.badge-adm{background:rgba(168,85,247,0.15);color:#c084fc}
+.badge-vend{background:rgba(0,229,160,0.15);color:var(--accent)}
+.badge-ofic{background:rgba(255,181,71,0.15);color:var(--warning)}
+.badge-get{background:rgba(96,165,250,0.15);color:var(--info)}
+.badge-post{background:rgba(0,229,160,0.15);color:var(--accent)}
+.badge-put{background:rgba(255,181,71,0.15);color:var(--warning)}
+.badge-del{background:rgba(255,77,109,0.15);color:var(--danger)}
+
+/* ---------- Title slide ---------- */
+.title-slide{
+  justify-content:center;align-items:center;text-align:center;
+}
+.title-slide .mark{
+  width:120px;height:120px;border-radius:28px;
+  background:linear-gradient(135deg,rgba(0,229,160,0.1),rgba(0,212,255,0.1));
+  border:1px solid rgba(0,229,160,0.25);
+  display:flex;align-items:center;justify-content:center;
+  padding:22px;
+  margin-bottom:32px;
+  box-shadow:0 0 80px rgba(0,229,160,0.2);
+}
+.title-slide .mark svg{width:100%;height:100%}
+.title-slide h1{font-size:80px;margin-bottom:20px}
+.title-slide .sub{font-size:22px;color:var(--text-dim);margin-bottom:60px}
+.title-slide .meta{
+  display:flex;gap:40px;justify-content:center;flex-wrap:wrap;
+  color:var(--text-mute);font-size:13px;
+}
+.title-slide .meta div{display:flex;flex-direction:column;gap:4px}
+.title-slide .meta small{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.6}
+.title-slide .meta strong{color:var(--text);font-weight:500}
+
+/* ---------- Section slide ---------- */
+.section-slide{justify-content:center;align-items:flex-start;padding:120px}
+.section-slide .num{
+  font-size:120px;font-weight:200;letter-spacing:-0.06em;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  line-height:1;margin-bottom:24px;
+}
+.section-slide h2{font-size:56px}
+
+/* ---------- Utils ---------- */
+.mt-2{margin-top:20px}
+.mt-4{margin-top:40px}
+.mb-2{margin-bottom:20px}
+.center{text-align:center}
+.row{display:flex;gap:24px;align-items:flex-start}
+.col{flex:1}
+.flex-1{flex:1}
+.small{font-size:13px;color:var(--text-mute)}
+.hl{color:var(--accent);font-weight:600}
+.hl2{color:var(--accent-2);font-weight:600}
+.danger{color:var(--danger)}
+.warn{color:var(--warning)}
+.info{color:var(--info)}
+
+.slide-header{margin-bottom:40px}
+
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.2)}
+
+@media(max-width:1024px){
+  .slide{padding:40px 32px}
+  h1{font-size:44px}
+  h2{font-size:32px}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .title-slide h1{font-size:52px}
+  .section-slide{padding:60px}
+  .section-slide .num{font-size:80px}
+  .section-slide h2{font-size:38px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#00e5a0"/><stop offset="1" stop-color="#00d4ff"/>
+        </linearGradient></defs>
+        <path d="M8 30 L8 10 L20 24 L32 10 L32 30" stroke="url(#lg)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="32" cy="10" r="2.6" fill="#00e5a0"/>
+      </svg>
+    </div>
+    <span>MotoPrime · Apresentação</span>
+  </div>
+  <div class="counter"><span id="cur">1</span> / <span id="tot">0</span></div>
+</div>
+
+<div class="deck" id="deck">
+
+<!-- ============================================================ -->
+<!-- 01 — CAPA                                                     -->
+<!-- ============================================================ -->
+<section class="slide title-slide">
+  <div class="mark">
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="lg2" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#00e5a0"/><stop offset="1" stop-color="#00d4ff"/>
+      </linearGradient></defs>
+      <path d="M8 30 L8 10 L20 24 L32 10 L32 30" stroke="url(#lg2)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="32" cy="10" r="2.6" fill="#00e5a0"/>
+    </svg>
+  </div>
+  <h1>Moto<strong>Prime</strong></h1>
+  <p class="sub">Sistema de Gestão para Concessionária de Motocicletas</p>
+  <div class="meta">
+    <div><small>Aluno</small><strong>Leonardo Souza</strong></div>
+    <div><small>Curso</small><strong>Back-end</strong></div>
+    <div><small>Disciplina</small><strong>Integração de Competências</strong></div>
+    <div><small>Data</small><strong>Outubro / 2026</strong></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 02 — AGENDA                                                   -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Agenda</span>
+    <h2>O que vamos <strong>ver</strong></h2>
+  </div>
+  <div class="grid-3" style="gap:24px">
+    <div class="card"><div class="ico">🎯</div><h3>1. Contexto</h3><p>Problema, objetivo e público-alvo.</p></div>
+    <div class="card"><div class="ico">🏗️</div><h3>2. Arquitetura</h3><p>Como o sistema é organizado em camadas.</p></div>
+    <div class="card"><div class="ico">⚙️</div><h3>3. Backend</h3><p>FastAPI, routers, models, schemas.</p></div>
+    <div class="card"><div class="ico">🔐</div><h3>4. Segurança</h3><p>JWT, bcrypt, permissões por cargo.</p></div>
+    <div class="card"><div class="ico">🌐</div><h3>5. API REST</h3><p>Todos os endpoints documentados.</p></div>
+    <div class="card"><div class="ico">🗄️</div><h3>6. Banco de Dados</h3><p>Modelo relacional e integridade.</p></div>
+    <div class="card"><div class="ico">🎨</div><h3>7. Frontend</h3><p>Design moderno e menu dinâmico.</p></div>
+    <div class="card"><div class="ico">🧪</div><h3>8. Regras de Negócio</h3><p>Fluxos de venda, devolução e OS.</p></div>
+    <div class="card"><div class="ico">🚀</div><h3>9. Execução</h3><p>Como rodar o sistema do zero.</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 03 — SEÇÃO: CONTEXTO                                          -->
+<!-- ============================================================ -->
+<section class="slide section-slide">
+  <div class="num">01</div>
+  <h2>Contexto e <strong>objetivo</strong></h2>
+  <p class="lead mt-2">Por que construir um sistema de gestão para concessionária?</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 04 — PROBLEMA                                                 -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">O Problema</span>
+    <h2>Por que <strong>planilhas não bastam</strong></h2>
+  </div>
+  <div class="grid-2">
+    <div>
+      <h3>Realidade atual</h3>
+      <p class="lead">Pequenas concessionárias ainda controlam tudo em cadernos e planilhas.</p>
+      <div class="grid-2 mt-2" style="gap:12px">
+        <div class="card"><div class="ico">📋</div><h3>Erros manuais</h3><p>Digitação repetida gera inconsistências.</p></div>
+        <div class="card"><div class="ico">🚗</div><h3>Estoque caótico</h3><p>Não se sabe o que está disponível.</p></div>
+        <div class="card"><div class="ico">💰</div><h3>Sem histórico</h3><p>Não há rastreio de vendas e devoluções.</p></div>
+        <div class="card"><div class="ico">🔧</div><h3>Oficina solta</h3><p>OS em papel, sem controle.</p></div>
+      </div>
+    </div>
+    <div>
+      <h3>Solução proposta</h3>
+      <p class="lead">Um sistema web centralizado, seguro e com perfis distintos.</p>
+      <div class="card mt-2">
+        <div class="ico">✅</div>
+        <h3>MotoPrime</h3>
+        <p>Backend em FastAPI + MySQL, frontend em HTML/CSS/JS puro, com autenticação JWT e controle de permissões por cargo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 05 — OBJETIVO                                                 -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Objetivo</span>
+    <h2>O que o sistema <strong>faz</strong></h2>
+  </div>
+  <div class="grid-3">
+    <div class="card"><div class="ico">👥</div><h3>Funcionários</h3><p>Cadastro e gestão de ADMs, vendedores e mecânicos com perfis distintos.</p></div>
+    <div class="card"><div class="ico">🚗</div><h3>Veículos</h3><p>Estoque com chassi, placa, KM, categoria e situação (disponível/vendido/reservado).</p></div>
+    <div class="card"><div class="ico">🧑‍💼</div><h3>Clientes</h3><p>Cadastro completo com CPF, contato e data de cadastro.</p></div>
+    <div class="card"><div class="ico">💸</div><h3>Vendas</h3><p>Registro com baixa automática de estoque e vendedor responsável.</p></div>
+    <div class="card"><div class="ico">↩️</div><h3>Devoluções</h3><p>Retorno do veículo ao estoque com histórico completo.</p></div>
+    <div class="card"><div class="ico">🔧</div><h3>Ordens de Serviço</h3><p>Abertura e fechamento com valor, descrição e mecânico responsável.</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 06 — PERFIS                                                   -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Perfis de usuário</span>
+    <h2>Três perfis, três <strong>visões</strong></h2>
+  </div>
+  <div class="grid-3">
+    <div class="card">
+      <span class="badge badge-adm">ADM</span>
+      <h3 class="mt-2">Administrador</h3>
+      <p>Controle total do sistema.</p>
+      <ul style="margin-top:14px;padding-left:18px;color:var(--text-dim);font-size:14px;line-height:2">
+        <li>Gerenciar funcionários</li>
+        <li>Gerenciar veículos</li>
+        <li>Gerenciar clientes</li>
+        <li>Ver todas as transações</li>
+        <li>Ver todas as OS</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="badge badge-vend">VENDEDOR</span>
+      <h3 class="mt-2">Vendedor</h3>
+      <p>Foco comercial.</p>
+      <ul style="margin-top:14px;padding-left:18px;color:var(--text-dim);font-size:14px;line-height:2">
+        <li>Gerenciar clientes</li>
+        <li>Consultar estoque (leitura)</li>
+        <li>Realizar vendas</li>
+        <li>Realizar devoluções</li>
+        <li>Ver suas próprias vendas</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="badge badge-ofic">OFICINA</span>
+      <h3 class="mt-2">Mecânico</h3>
+      <p>Foco técnico.</p>
+      <ul style="margin-top:14px;padding-left:18px;color:var(--text-dim);font-size:14px;line-height:2">
+        <li>Abrir ordens de serviço</li>
+        <li>Fechar ordens de serviço</li>
+        <li>Consultar estoque (leitura)</li>
+        <li>Ver suas próprias OS</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 07 — SEÇÃO: ARQUITETURA                                       -->
+<!-- ============================================================ -->
+<section class="slide section-slide">
+  <div class="num">02</div>
+  <h2>Arquitetura <strong>do sistema</strong></h2>
+  <p class="lead mt-2">Como as camadas se comunicam e por quê.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 08 — ARQUITETURA EM CAMADAS                                   -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Arquitetura</span>
+    <h2>Visão em <strong>camadas</strong></h2>
+  </div>
+  <div class="diagram">┌──────────────────────────────────────────────────────────────────┐
+│  FRONTEND  (HTML + CSS + JavaScript vanilla)                     │
+│  ────────────────────────────────────────────────────────────    │
+│  • Páginas estáticas servidas pelo próprio FastAPI                │
+│  • Comunicação via fetch() com JWT no header Authorization        │
+│  • Estado guardado em localStorage (token, cargo, nome)           │
+└──────────────────────────┬───────────────────────────────────────┘
+                           │  HTTP · JSON
+                           ▼
+┌──────────────────────────────────────────────────────────────────┐
+│  FASTAPI  (Backend · camada de aplicação)                        │
+│  ────────────────────────────────────────────────────────────    │
+│  1. ROUTERS          → definem rotas e injetam dependências       │
+│  2. DEPENDENCIES     → require_adm, require_vendedor, ...         │
+│  3. AUTH             → valida JWT, extrai usuário                 │
+│  4. SCHEMAS          → validação de entrada/saída (Pydantic)      │
+│  5. MODELS           → mapeamento ORM (SQLAlchemy)                │
+└──────────────────────────┬───────────────────────────────────────┘
+                           │  SQLAlchemy ORM
+                           ▼
+┌──────────────────────────────────────────────────────────────────┐
+│  MYSQL 8.0                                                        │
+│  ────────────────────────────────────────────────────────────    │
+│  • 5 tabelas: funcionarios · clientes · veiculos ·               │
+│    transacoes · ordens_servico                                    │
+│  • Integridade por PK (cpf, chassi) e FK                         │
+└──────────────────────────────────────────────────────────────────┘</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 09 — FLUXO DE UMA REQUISIÇÃO                                  -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Fluxo</span>
+    <h2>O caminho de uma <strong>requisição</strong></h2>
+  </div>
+  <div class="flow">
+    <div class="flow-step"><small>1</small>Navegador<small>fetch()</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><small>2</small>FastAPI<small>Router</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><small>3</small>JWT<small>get_current_user</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><small>4</small>Cargo<small>require_*</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><small>5</small>Schema<small>Pydantic</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><small>6</small>Regra<small>lógica</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><small>7</small>ORM<small>SQLAlchemy</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><small>8</small>MySQL<small>SQL</small></div>
+  </div>
+  <pre class="code mt-2"><span class="com"># Exemplo: listar veículos (qualquer usuário autenticado)</span>
+<span class="kw">@router</span>.get(<span class="str">"/veiculos/"</span>, response_model=<span class="cls">List</span>[<span class="cls">VeiculoOut</span>])
+<span class="kw">def</span> <span class="fn">listar</span>(db: <span class="cls">Session</span> = <span class="cls">Depends</span>(get_db), _=<span class="cls">Depends</span>(_any_authenticated)):
+    <span class="com"># 1. FastAPI chamou get_db() → sessão MySQL</span>
+    <span class="com"># 2. FastAPI chamou _any_authenticated → validou JWT</span>
+    <span class="com"># 3. Agora só precisa buscar e devolver</span>
+    <span class="kw">return</span> db.query(<span class="cls">Veiculo</span>).all()</pre>
+</section>
+
+<!-- ============================================================ -->
+<!-- 10 — SEÇÃO: BACKEND                                           -->
+<!-- ============================================================ -->
+<section class="slide section-slide">
+  <div class="num">03</div>
+  <h2>Backend com <strong>FastAPI</strong></h2>
+  <p class="lead mt-2">Estrutura, responsabilidades e principais arquivos.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 11 — ESTRUTURA DE ARQUIVOS                                    -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Backend</span>
+    <h2>Estrutura de <strong>arquivos</strong></h2>
+  </div>
+  <div class="diagram">app/
+├── main.py             ← instancia FastAPI, registra routers e monta /static
+├── database.py         ← engine SQLAlchemy, SessionLocal, dependência get_db
+├── models.py           ← 5 classes ORM (tabelas) + enums
+├── schemas.py          ← contratos Pydantic (entrada e saída)
+├── auth.py             ← hash bcrypt + criação/validação de JWT
+├── dependencies.py     ← require_adm, require_vendedor, require_oficina
+│
+├── routers/            ← cada arquivo cuida de uma área da API
+│   ├── auth_router.py       POST /auth/login
+│   ├── funcionarios.py      CRUD /funcionarios
+│   ├── veiculos.py          CRUD /veiculos
+│   ├── clientes.py          CRUD /clientes
+│   ├── transacoes.py        /transacoes/venda | /devolucao | /minhas
+│   └── ordens_servico.py    /ordens-servico
+│
+└── static/             ← frontend (HTML, CSS, JS puro)
+    ├── css/app.css
+    └── *.html</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 12 — MAIN.PY                                                  -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">main.py</span>
+    <h2>O ponto de <strong>entrada</strong></h2>
+  </div>
+  <pre class="code"><span class="com"># 1) Cria tabelas no MySQL caso não existam (lê models.py)</span>
+<span class="cls">Base</span>.metadata.create_all(bind=engine)
+
+<span class="com"># 2) Instancia a aplicação FastAPI</span>
+app = <span class="cls">FastAPI</span>(title=<span class="str">"MotoPrime API"</span>, version=<span class="str">"1.0.0"</span>)
+
+<span class="com"># 3) Serve arquivos estáticos: /static/css/app.css → app/static/css/app.css</span>
+app.mount(<span class="str">"/static"</span>, <span class="cls">StaticFiles</span>(directory=<span class="str">"app/static"</span>), name=<span class="str">"static"</span>)
+
+<span class="com"># 4) Registra os 6 routers — cada um traz seu conjunto de endpoints</span>
+app.include_router(auth_router.router)
+app.include_router(funcionarios.router)
+app.include_router(veiculos.router)
+app.include_router(clientes.router)
+app.include_router(transacoes.router)
+app.include_router(ordens_servico.router)
+
+<span class="com"># 5) Rotas que devolvem HTML (não JSON)</span>
+<span class="kw">@app</span>.get(<span class="str">"/dashboard"</span>)
+<span class="kw">def</span> <span class="fn">dashboard_page</span>():
+    <span class="kw">return</span> <span class="cls">FileResponse</span>(<span class="str">"app/static/dashboard.html"</span>)</pre>
+</section>
+
+<!-- ============================================================ -->
+<!-- 13 — DATABASE.PY                                              -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">database.py</span>
+    <h2>Conexão com o <strong>MySQL</strong></h2>
+  </div>
+  <pre class="code"><span class="com"># 1) Configurações lidas do .env automaticamente</span>
+<span class="kw">class</span> <span class="cls">Settings</span>(<span class="cls">BaseSettings</span>):
+    DATABASE_URL: str     <span class="com"># ex: mysql+pymysql://root:senha@localhost:3306/concessionaria</span>
+    SECRET_KEY: str       <span class="com"># chave para assinar JWT</span>
+    ALGORITHM: str = <span class="str">"HS256"</span>
+    ACCESS_TOKEN_EXPIRE_MINUTES: <span class="cls">int</span> = <span class="num">480</span>  <span class="com"># 8 horas</span>
+
+<span class="com"># 2) Engine: gerencia o pool de conexões com o MySQL</span>
+<span class="com">#    pool_pre_ping=True → testa a conexão antes de usar (evita "server has gone away")</span>
+engine = create_engine(settings.DATABASE_URL, pool_pre_ping=<span class="kw">True</span>)
+
+<span class="com"># 3) Fábrica de sessões: cada requisição ganha a sua</span>
+SessionLocal = sessionmaker(autocommit=<span class="kw">False</span>, autoflush=<span class="kw">False</span>, bind=engine)
+
+<span class="com"># 4) Base declarativa: todos os models herdam dela</span>
+<span class="cls">Base</span> = declarative_base()
+
+<span class="com"># 5) Dependência do FastAPI: abre sessão → entrega → fecha ao terminar</span>
+<span class="kw">def</span> <span class="fn">get_db</span>():
+    db = <span class="cls">SessionLocal</span>()
+    <span class="kw">try</span>:
+        <span class="kw">yield</span> db
+    <span class="kw">finally</span>:
+        db.close()</pre>
+</section>
+
+<!-- ============================================================ -->
+<!-- 14 — MODELS.PY                                                -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">models.py</span>
+    <h2>Os modelos <strong>ORM</strong></h2>
+  </div>
+  <div class="row">
+    <div class="col">
+      <pre class="code"><span class="kw">class</span> <span class="cls">Veiculo</span>(<span class="cls">Base</span>):
+    __tablename__ = <span class="str">"veiculos"</span>
+
+    <span class="com"># Chave primária = chassi (17 caracteres)</span>
+    chassi = <span class="cls">Column</span>(<span class="cls">String</span>(<span class="num">17</span>), primary_key=<span class="kw">True</span>, index=<span class="kw">True</span>)
+
+    marca = <span class="cls">Column</span>(<span class="cls">String</span>(<span class="num">50</span>), nullable=<span class="kw">False</span>)
+    modelo = <span class="cls">Column</span>(<span class="cls">String</span>(<span class="num">80</span>), nullable=<span class="kw">False</span>)
+    ano = <span class="cls">Column</span>(<span class="cls">Integer</span>, nullable=<span class="kw">False</span>)
+
+    <span class="com"># Enums garantem valores válidos no banco</span>
+    categoria = <span class="cls">Column</span>(<span class="cls">Enum</span>(<span class="cls">CategoriaVeiculo</span>))
+    situacao = <span class="cls">Column</span>(<span class="cls">Enum</span>(<span class="cls">SituacaoVeiculo</span>),
+                    default=<span class="cls">SituacaoVeiculo</span>.DISPONIVEL)
+
+    preco = <span class="cls">Column</span>(<span class="cls">Numeric</span>(<span class="num">12</span>, <span class="num">2</span>), nullable=<span class="kw">False</span>)
+    placa = <span class="cls">Column</span>(<span class="cls">String</span>(<span class="num">8</span>), nullable=<span class="kw">True</span>)
+    quilometragem = <span class="cls">Column</span>(<span class="cls">Integer</span>, default=<span class="num">0</span>)
+    descricao = <span class="cls">Column</span>(<span class="cls">Text</span>)</pre>
+    </div>
+    <div class="col">
+      <div class="card">
+        <div class="ico">🧩</div>
+        <h3>O que é ORM?</h3>
+        <p>Object-Relational Mapping: cada classe Python vira uma tabela no MySQL. Você escreve <code>db.query(Veiculo).all()</code> e o SQLAlchemy traduz para <code>SELECT * FROM veiculos</code>.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🔒</div>
+        <h3>Segurança automática</h3>
+        <p>ORM previne SQL injection — você nunca concatena strings no SQL.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🔗</div>
+        <h3>Foreign Keys</h3>
+        <p>Uma <code>Transacao</code> aponta para <code>Cliente</code>, <code>Veiculo</code> e <code>Funcionario</code> via <code>ForeignKey</code> — o banco garante a integridade.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 15 — SCHEMAS.PY                                               -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">schemas.py</span>
+    <h2>Contratos de <strong>dados</strong></h2>
+  </div>
+  <pre class="code"><span class="com"># Base: campos comuns</span>
+<span class="kw">class</span> <span class="cls">VeiculoBase</span>(<span class="cls">BaseModel</span>):
+    chassi: str = <span class="cls">Field</span>(..., min_length=<span class="num">17</span>, max_length=<span class="num">17</span>)
+    marca: str
+    modelo: str
+    ano: <span class="cls">int</span>
+    categoria: <span class="cls">CategoriaVeiculo</span>
+    preco: <span class="cls">Decimal</span>
+
+<span class="com"># Create: herda Base (usado no POST)</span>
+<span class="kw">class</span> <span class="cls">VeiculoCreate</span>(<span class="cls">VeiculoBase</span>):
+    <span class="kw">pass</span>
+
+<span class="com"># Update: todos os campos opcionais</span>
+<span class="kw">class</span> <span class="cls">VeiculoUpdate</span>(<span class="cls">BaseModel</span>):
+    marca: <span class="cls">Optional</span>[str] = <span class="kw">None</span>
+    modelo: <span class="cls">Optional</span>[str] = <span class="kw">None</span>
+    ...
+
+<span class="com"># Out: devolvido pela API (com campos gerados pelo servidor)</span>
+<span class="kw">class</span> <span class="cls">VeiculoOut</span>(<span class="cls">VeiculoBase</span>):
+    situacao: <span class="cls">SituacaoVeiculo</span>
+    <span class="kw">class</span> <span class="cls">Config</span>: from_attributes = <span class="kw">True</span>  <span class="com"># lê direto do ORM</span></pre>
+  <div class="grid-3 mt-4">
+    <div class="card"><div class="ico">✅</div><h3>Validação grátis</h3><p>Se o cliente mandar chassi com 10 caracteres, o FastAPI devolve HTTP 422 automaticamente.</p></div>
+    <div class="card"><div class="ico">📄</div><h3>Documentação no /docs</h3><p>Os schemas alimentam o Swagger — a doc da API é gerada sozinha.</p></div>
+    <div class="card"><div class="ico">🔀</div><h3>Separação Create/Update/Out</h3><p>Cada contexto tem seu formato. Criar exige senha; atualizar não; resposta nunca mostra hash.</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 16 — SEÇÃO: SEGURANÇA                                         -->
+<!-- ============================================================ -->
+<section class="slide section-slide">
+  <div class="num">04</div>
+  <h2>Segurança: JWT + <strong>bcrypt</strong></h2>
+  <p class="lead mt-2">Autenticação robusta e autorização em cascata.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 17 — AUTENTICAÇÃO COM BCRYPT                                  -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">auth.py</span>
+    <h2>Hash de <strong>senhas</strong></h2>
+  </div>
+  <div class="row">
+    <div class="col">
+      <pre class="code"><span class="com"># bcrypt: hash lento, com salt aleatório por senha</span>
+pwd_context = <span class="cls">CryptContext</span>(schemes=[<span class="str">"bcrypt"</span>], deprecated=<span class="str">"auto"</span>)
+
+<span class="kw">def</span> <span class="fn">hash_senha</span>(senha: str) -> str:
+    <span class="kw">return</span> pwd_context.hash(senha)
+
+<span class="kw">def</span> <span class="fn">verificar_senha</span>(senha: str, hash_: str) -> bool:
+    <span class="kw">return</span> pwd_context.verify(senha, hash_)</pre>
+    </div>
+    <div class="col">
+      <div class="card">
+        <div class="ico">🔐</div>
+        <h3>Por que bcrypt?</h3>
+        <p>É um algoritmo <span class="hl">lento de propósito</span>. Um ataque de força bruta que testaria milhões de senhas por segundo com MD5 cai para centenas por segundo com bcrypt.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🧂</div>
+        <h3>Salt automático</h3>
+        <p>Dois usuários com a mesma senha geram <span class="hl">hashes diferentes</span>. Impossível usar rainbow tables.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🚫</div>
+        <h3>Nunca em texto puro</h3>
+        <p>A senha real só existe na memória durante o POST /auth/login. Depois disso, só o hash circula.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 18 — JWT                                                      -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">auth.py</span>
+    <h2>Tokens <strong>JWT</strong></h2>
+  </div>
+  <div class="row">
+    <div class="col">
+      <pre class="code"><span class="kw">def</span> <span class="fn">criar_token</span>(data: dict) -> str:
+    payload = data.copy()
+    payload[<span class="str">"exp"</span>] = datetime.utcnow() + timedelta(minutes=<span class="num">480</span>)
+    <span class="kw">return</span> jwt.encode(payload, SECRET_KEY, algorithm=<span class="str">"HS256"</span>)
+
+<span class="kw">def</span> <span class="fn">get_current_user</span>(token: str = <span class="cls">Depends</span>(oauth2_scheme),
+                     db = <span class="cls">Depends</span>(get_db)):
+    <span class="kw">try</span>:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[<span class="str">"HS256"</span>])
+        cpf = payload.get(<span class="str">"sub"</span>)
+    <span class="kw">except</span> <span class="cls">JWTError</span>:
+        <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">401</span>, <span class="str">"Credenciais inválidas"</span>)
+    user = db.query(<span class="cls">Funcionario</span>).filter(<span class="cls">Funcionario</span>.cpf == cpf).first()
+    <span class="kw">if</span> <span class="kw">not</span> user: <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">401</span>)
+    <span class="kw">return</span> user</pre>
+    </div>
+    <div class="col">
+      <div class="card">
+        <div class="ico">📦</div>
+        <h3>Estrutura do JWT</h3>
+        <p><span class="hl">Header</span> + <span class="hl">Payload</span> + <span class="hl">Assinatura</span>, tudo em Base64.</p>
+        <pre class="code mt-2" style="font-size:11px">{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+{
+  "sub": "00000000000",
+  "cargo": "adm",
+  "exp": 1730000000
+}
+HMAC-SHA256(...)</pre>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🛡️</div>
+        <h3>Assinatura = prova</h3>
+        <p>Se alguém alterar o payload (ex: mudar <code>cargo</code> para "adm"), a assinatura <span class="hl">deixa de bater</span> e o token é rejeitado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 19 — AUTORIZAÇÃO POR CARGO                                    -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">dependencies.py</span>
+    <h2>Autorização por <strong>cargo</strong></h2>
+  </div>
+  <pre class="code"><span class="com"># Fluxo em cascata: cada nível chama o anterior</span>
+<span class="kw">def</span> <span class="fn">require_adm</span>(user: <span class="cls">Funcionario</span> = <span class="cls">Depends</span>(get_current_user)):
+    <span class="kw">if</span> user.cargo != <span class="cls">CargoEnum</span>.ADM:
+        <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">403</span>, <span class="str">"Acesso restrito a ADM"</span>)
+    <span class="kw">return</span> user
+
+<span class="kw">def</span> <span class="fn">require_vendedor</span>(user = <span class="cls">Depends</span>(get_current_user)):
+    <span class="kw">if</span> user.cargo <span class="kw">not in</span> (<span class="cls">CargoEnum</span>.VENDEDOR, <span class="cls">CargoEnum</span>.ADM):
+        <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">403</span>, <span class="str">"Acesso restrito a Vendedor"</span>)
+    <span class="kw">return</span> user
+
+<span class="kw">def</span> <span class="fn">require_oficina</span>(user = <span class="cls">Depends</span>(get_current_user)):
+    <span class="kw">if</span> user.cargo <span class="kw">not in</span> (<span class="cls">CargoEnum</span>.OFICINA, <span class="cls">CargoEnum</span>.ADM):
+        <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">403</span>, <span class="str">"Acesso restrito à Oficina"</span>)
+    <span class="kw">return</span> user</pre>
+  <div class="grid-3 mt-4">
+    <div class="card"><div class="ico">🔽</div><h3>Cascata</h3><p><code>require_adm</code> → <code>get_current_user</code> → valida JWT → busca no banco. Se qualquer passo falha, a requisição nem chega na rota.</p></div>
+    <div class="card"><div class="ico">♻️</div><h3>Reutilizável</h3><p>Basta adicionar <code>_=Depends(require_adm)</code> no endpoint e a proteção é aplicada.</p></div>
+    <div class="card"><div class="ico">🚫</div><h3>403 vs 401</h3><p>401 = não autenticado (token inválido).<br>403 = autenticado, mas sem permissão.</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 20 — SEÇÃO: API REST                                          -->
+<!-- ============================================================ -->
+<section class="slide section-slide">
+  <div class="num">05</div>
+  <h2>API <strong>REST</strong></h2>
+  <p class="lead mt-2">Endpoints, verbos HTTP e códigos de status.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 21 — ENDPOINTS: AUTH + FUNCIONÁRIOS                           -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">API · parte 1</span>
+    <h2>Autenticação e <strong>funcionários</strong></h2>
+  </div>
+  <table>
+    <thead><tr><th style="width:80px">Método</th><th>Rota</th><th>Descrição</th><th style="width:180px">Acesso</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-post">POST</span></td><td><code>/auth/login</code></td><td>Login (form-urlencoded) — retorna JWT</td><td><span class="badge badge-get">Público</span></td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td><code>/funcionarios/</code></td><td>Cadastrar funcionário</td><td><span class="badge badge-adm">ADM</span></td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td><code>/funcionarios/</code></td><td>Listar todos</td><td><span class="badge badge-adm">ADM</span></td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td><td><code>/funcionarios/{cpf}</code></td><td>Atualizar (senha opcional)</td><td><span class="badge badge-adm">ADM</span></td></tr>
+      <tr><td><span class="badge badge-del">DELETE</span></td><td><code>/funcionarios/{cpf}</code></td><td>Excluir</td><td><span class="badge badge-adm">ADM</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<!-- 22 — ENDPOINTS: VEÍCULOS + CLIENTES                           -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">API · parte 2</span>
+    <h2>Veículos e <strong>clientes</strong></h2>
+  </div>
+  <table>
+    <thead><tr><th style="width:80px">Método</th><th>Rota</th><th>Descrição</th><th style="width:220px">Acesso</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-post">POST</span></td><td><code>/veiculos/</code></td><td>Cadastrar veículo</td><td><span class="badge badge-adm">ADM</span></td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td><code>/veiculos/</code></td><td>Listar estoque</td><td><span class="badge badge-adm">ADM</span> <span class="badge badge-vend">Vend</span> <span class="badge badge-ofic">Ofic</span></td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td><code>/veiculos/disponiveis</code></td><td>Só disponíveis</td><td><span class="badge badge-adm">ADM</span> <span class="badge badge-vend">Vend</span> <span class="badge badge-ofic">Ofic</span></td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td><td><code>/veiculos/{chassi}</code></td><td>Atualizar</td><td><span class="badge badge-adm">ADM</span></td></tr>
+      <tr><td><span class="badge badge-del">DELETE</span></td><td><code>/veiculos/{chassi}</code></td><td>Excluir</td><td><span class="badge badge-adm">ADM</span></td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td><code>/clientes/</code></td><td>Cadastrar cliente</td><td><span class="badge badge-adm">ADM</span> <span class="badge badge-vend">Vend</span></td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td><code>/clientes/</code></td><td>Listar clientes</td><td><span class="badge badge-adm">ADM</span> <span class="badge badge-vend">Vend</span></td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td><td><code>/clientes/{cpf}</code></td><td>Atualizar</td><td><span class="badge badge-adm">ADM</span> <span class="badge badge-vend">Vend</span></td></tr>
+      <tr><td><span class="badge badge-del">DELETE</span></td><td><code>/clientes/{cpf}</code></td><td>Excluir</td><td><span class="badge badge-adm">ADM</span> <span class="badge badge-vend">Vend</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<!-- 23 — ENDPOINTS: TRANSAÇÕES + OS                               -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">API · parte 3</span>
+    <h2>Transações e <strong>ordens de serviço</strong></h2>
+  </div>
+  <table>
+    <thead><tr><th style="width:80px">Método</th><th>Rota</th><th>Descrição</th><th style="width:220px">Acesso</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-post">POST</span></td><td><code>/transacoes/venda</code></td><td>Registrar venda</td><td><span class="badge badge-adm">ADM</span> <span class="badge badge-vend">Vend</span></td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td><code>/transacoes/devolucao</code></td><td>Registrar devolução</td><td><span class="badge badge-adm">ADM</span> <span class="badge badge-vend">Vend</span></td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td><code>/transacoes/financeiro</code></td><td>Receita/despesa avulsa</td><td><span class="badge badge-adm">ADM</span></td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td><code>/transacoes/</code></td><td>Histórico geral</td><td><span class="badge badge-adm">ADM</span></td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td><code>/transacoes/minhas</code></td><td>Vendas do próprio usuário</td><td><span class="badge badge-vend">Vend</span></td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td><code>/ordens-servico/</code></td><td>Abrir OS</td><td><span class="badge badge-adm">ADM</span> <span class="badge badge-ofic">Ofic</span></td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td><code>/ordens-servico/</code></td><td>Listar todas as OS</td><td><span class="badge badge-adm">ADM</span> <span class="badge badge-ofic">Ofic</span></td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td><code>/ordens-servico/minhas</code></td><td>OS do próprio mecânico</td><td><span class="badge badge-ofic">Ofic</span></td></tr>
+      <tr><td><span class="badge badge-put">PUT</span></td><td><code>/ordens-servico/{id}/fechar</code></td><td>Fechar com valor final</td><td><span class="badge badge-adm">ADM</span> <span class="badge badge-ofic">Ofic</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<!-- 24 — CÓDIGOS HTTP                                             -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">API · padrões</span>
+    <h2>Códigos <strong>HTTP</strong> usados</h2>
+  </div>
+  <div class="grid-2">
+    <table>
+      <thead><tr><th>Código</th><th>Quando usamos</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag-ok">200 OK</span></td><td>Requisição bem-sucedida (GET/PUT)</td></tr>
+        <tr><td><span class="tag-ok">201 Created</span></td><td>Recurso criado (POST)</td></tr>
+        <tr><td><span class="tag-ok">204 No Content</span></td><td>Excluído com sucesso (DELETE)</td></tr>
+        <tr><td><span class="danger">400 Bad Request</span></td><td>Regra de negócio violada (ex: veículo já vendido)</td></tr>
+        <tr><td><span class="danger">401 Unauthorized</span></td><td>Token ausente/inválido/expirado</td></tr>
+        <tr><td><span class="danger">403 Forbidden</span></td><td>Autenticado, mas sem permissão para o cargo</td></tr>
+        <tr><td><span class="warn">404 Not Found</span></td><td>Recurso não existe (ex: CPF não cadastrado)</td></tr>
+        <tr><td><span class="warn">422 Unprocessable</span></td><td>Validação Pydantic falhou (dados inválidos)</td></tr>
+      </tbody>
+    </table>
+    <div>
+      <div class="card">
+        <div class="ico">📘</div>
+        <h3>Swagger UI</h3>
+        <p>Toda a API está documentada automaticamente em <code>/docs</code>. Você pode testar cada endpoint direto pela interface — basta colar o JWT.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">📕</div>
+        <h3>ReDoc</h3>
+        <p>Documentação alternativa em <code>/redoc</code> — visão mais limpa e navegável.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🧪</div>
+        <h3>REST Client (VSCode)</h3>
+        <p>Arquivo <code>.vscode/requests.http</code> com requisições prontas — clique em "Send Request".</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 25 — SEÇÃO: BANCO DE DADOS                                    -->
+<!-- ============================================================ -->
+<section class="slide section-slide">
+  <div class="num">06</div>
+  <h2>Banco de <strong>dados</strong></h2>
+  <p class="lead mt-2">Modelo relacional, chaves e integridade.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 26 — DER                                                      -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Banco</span>
+    <h2>Modelo <strong>relacional</strong></h2>
+  </div>
+  <div class="diagram">  ┌─────────────────┐              ┌─────────────────┐
+  │  FUNCIONARIOS   │              │    CLIENTES     │
+  ├─────────────────┤              ├─────────────────┤
+  │ PK cpf          │◄────┐        │ PK cpf          │
+  │    nome         │     │        │    nome         │
+  │    email        │     │        │    email        │
+  │    senha_hash   │     │        │    telefone     │
+  │    cargo        │     │        └────────┬────────┘
+  └────────┬────────┘     │                 │
+           │              │                 │
+           │   ┌──────────┴─────────────────▼──────────┐
+           │   │            TRANSACOES                 │
+           │   ├───────────────────────────────────────┤
+           │   │ PK id                                 │
+           └───│ FK vendedor_cpf                       │
+               │ FK cliente_cpf                        │
+               │ FK veiculo_chassi                     │
+               │    tipo · valor · data · descricao    │
+               └─────────────┬─────────────────────────┘
+                             │
+  ┌─────────────────┐        │
+  │    VEICULOS     │◄───────┘
+  ├─────────────────┤
+  │ PK chassi       │
+  │    marca        │
+  │    modelo       │
+  │    categoria    │
+  │    situacao     │
+  │    preco        │
+  │    placa        │
+  │    quilometragem│
+  └────────┬────────┘
+           │
+           │      ┌──────────────────────┐
+           └─────►│   ORDENS_SERVICO     │
+                  ├──────────────────────┤
+                  │ PK id                │
+                  │ FK cliente_cpf       │
+                  │ FK veiculo_chassi    │
+                  │ FK mecanico_cpf      │
+                  │    status · valor    │
+                  └──────────────────────┘</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 27 — CHAVES                                                   -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Banco</span>
+    <h2>Chaves <strong>primárias</strong> e escolhas</h2>
+  </div>
+  <div class="grid-3">
+    <div class="card">
+      <span class="badge badge-adm">PK</span>
+      <h3 class="mt-2">CPF como chave</h3>
+      <p><strong>Funcionários e clientes</strong> usam o CPF como PK. Motivo: é o identificador natural do domínio — único, estável, conhecido por todos.</p>
+    </div>
+    <div class="card">
+      <span class="badge badge-vend">PK</span>
+      <h3 class="mt-2">Chassi como chave</h3>
+      <p><strong>Veículos</strong> usam chassi (17 caracteres). É único por lei em todo o mundo, impossível duplicar.</p>
+    </div>
+    <div class="card">
+      <span class="badge badge-ofic">PK</span>
+      <h3 class="mt-2">ID auto para logs</h3>
+      <p><strong>Transações</strong> e <strong>ordens de serviço</strong> usam ID auto-increment. Elas são eventos e podem ter múltiplos por dia.</p>
+    </div>
+  </div>
+  <div class="card mt-4">
+    <div class="ico">🔗</div>
+    <h3>Foreign Keys</h3>
+    <p>Cada FK cria um vínculo garantido pelo banco. Se tentar criar uma transação com <code>cliente_cpf</code> inexistente, o MySQL rejeita automaticamente. Isso protege a integridade mesmo se o backend falhar.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 28 — SEÇÃO: FRONTEND                                          -->
+<!-- ============================================================ -->
+<section class="slide section-slide">
+  <div class="num">07</div>
+  <h2>Frontend e <strong>design</strong></h2>
+  <p class="lead mt-2">Inspirado em Tesla, BYD e NIO.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 29 — DESIGN SYSTEM                                            -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Design</span>
+    <h2>Estilo <strong>visual</strong></h2>
+  </div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="ico">🌑</div>
+      <h3>Dark mode premium</h3>
+      <p>Fundo quase preto (#08080c) com gradientes radiais sutis em verde-água e ciano. Estilo de marcas como NIO e Zeekr.</p>
+    </div>
+    <div class="card">
+      <div class="ico">✨</div>
+      <h3>Glassmorphism</h3>
+      <p>Cards com <code>backdrop-filter: blur()</code>, bordas translúcidas e sombras suaves — efeito de vidro fosco.</p>
+    </div>
+    <div class="card">
+      <div class="ico">🔠</div>
+      <h3>Tipografia fina</h3>
+      <p>Inter em pesos 300–700, letter-spacing negativo, títulos em gradiente. Refinamento à la Tesla.</p>
+    </div>
+    <div class="card">
+      <div class="ico">🎯</div>
+      <h3>Acento neon</h3>
+      <p>Verde-limão (#00e5a0) em botões, badges e item ativo do menu. Glow sutil em elementos-chave.</p>
+    </div>
+    <div class="card">
+      <div class="ico">📱</div>
+      <h3>Responsivo</h3>
+      <p>Grid CSS adapta a 1 coluna em telas pequenas. Menu lateral oculta em mobile.</p>
+    </div>
+    <div class="card">
+      <div class="ico">⚡</div>
+      <h3>Sem frameworks</h3>
+      <p>HTML + CSS + JS puro. Zero dependência externa além da fonte Inter (Google Fonts).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 30 — MENU DINÂMICO                                            -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Frontend</span>
+    <h2>Menu dinâmico por <strong>cargo</strong></h2>
+  </div>
+  <pre class="code"><span class="kw">function</span> <span class="fn">buildNav</span>(active){
+  <span class="kw">const</span> c = Auth.cargo;  <span class="com">// lido do localStorage</span>
+  <span class="kw">const</span> items = [{icon:<span class="str">'◈'</span>, label:<span class="str">'Dashboard'</span>, href:<span class="str">'/dashboard'</span>}];
+
+  <span class="kw">if</span>(c === <span class="str">'adm'</span>){
+    items.push({icon:<span class="str">'◉'</span>, label:<span class="str">'Funcionários'</span>, href:<span class="str">'/funcionarios'</span>});
+    items.push({icon:<span class="str">'◆'</span>, label:<span class="str">'Veículos'</span>, href:<span class="str">'/veiculos'</span>});
+    items.push({icon:<span class="str">'◇'</span>, label:<span class="str">'Clientes'</span>, href:<span class="str">'/clientes'</span>});
+    items.push({icon:<span class="str">'▣'</span>, label:<span class="str">'Transações'</span>, href:<span class="str">'/transacoes'</span>});
+    items.push({icon:<span class="str">'⚙'</span>, label:<span class="str">'Ordens de Serviço'</span>, href:<span class="str">'/ordens'</span>});
+  }
+  <span class="kw">if</span>(c === <span class="str">'vendedor'</span> || c === <span class="str">'adm'</span>){
+    items.push({icon:<span class="str">'◆'</span>, label:<span class="str">'Veículos'</span>, href:<span class="str">'/veiculos'</span>});
+    items.push({icon:<span class="str">'◇'</span>, label:<span class="str">'Clientes'</span>, href:<span class="str">'/clientes'</span>});
+    items.push({icon:<span class="str">'▣'</span>, label:<span class="str">'Transações'</span>, href:<span class="str">'/transacoes'</span>});
+  }
+  <span class="kw">if</span>(c === <span class="str">'oficina'</span> || c === <span class="str">'adm'</span>){
+    items.push({icon:<span class="str">'◆'</span>, label:<span class="str">'Veículos'</span>, href:<span class="str">'/veiculos'</span>});
+    items.push({icon:<span class="str">'⚙'</span>, label:<span class="str">'Ordens de Serviço'</span>, href:<span class="str">'/ordens'</span>});
+  }
+  <span class="com">// ...renderiza o HTML</span>
+}</pre>
+  <div class="card mt-4">
+    <div class="ico">⚠️</div>
+    <h3>Importante: menu escondido ≠ segurança</h3>
+    <p>O menu dinâmico é <span class="hl">UX</span>. A segurança real está no <span class="hl">backend</span>: se o usuário tentar chamar um endpoint sem permissão, recebe HTTP 403, mesmo que consiga montar a URL manualmente.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 31 — SEÇÃO: REGRAS DE NEGÓCIO                                 -->
+<!-- ============================================================ -->
+<section class="slide section-slide">
+  <div class="num">08</div>
+  <h2>Regras de <strong>negócio</strong></h2>
+  <p class="lead mt-2">Venda, devolução e ordens de serviço.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 32 — REGRA: VENDA                                             -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Regra de negócio</span>
+    <h2>Como funciona uma <strong>venda</strong></h2>
+  </div>
+  <pre class="code"><span class="kw">@router</span>.post(<span class="str">"/venda"</span>, response_model=<span class="cls">TransacaoOut</span>, status_code=<span class="num">201</span>)
+<span class="kw">def</span> <span class="fn">venda</span>(dados: <span class="cls">TransacaoCreate</span>,
+          db: <span class="cls">Session</span> = <span class="cls">Depends</span>(get_db),
+          user: <span class="cls">Funcionario</span> = <span class="cls">Depends</span>(require_vendedor)):
+
+    <span class="com"># 1) Cliente precisa existir</span>
+    <span class="kw">if</span> <span class="kw">not</span> db.query(<span class="cls">Cliente</span>).filter(<span class="cls">Cliente</span>.cpf == dados.cliente_cpf).first():
+        <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">404</span>, <span class="str">"Cliente não encontrado"</span>)
+
+    <span class="com"># 2) Veículo precisa existir</span>
+    v = db.query(<span class="cls">Veiculo</span>).filter(<span class="cls">Veiculo</span>.chassi == dados.veiculo_chassi).first()
+    <span class="kw">if</span> <span class="kw">not</span> v: <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">404</span>, <span class="str">"Veículo não encontrado"</span>)
+
+    <span class="com"># 3) Regra: não pode estar vendido</span>
+    <span class="kw">if</span> v.situacao == <span class="cls">SituacaoVeiculo</span>.VENDIDO:
+        <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">400</span>, <span class="str">"Veículo já vendido"</span>)
+
+    <span class="com"># 4) Cria a transação (vendedor vem do JWT, não do frontend!)</span>
+    t = <span class="cls">Transacao</span>(tipo=<span class="cls">TipoTransacao</span>.VENDA,
+                  valor=dados.valor <span class="kw">or</span> v.preco,
+                  cliente_cpf=dados.cliente_cpf,
+                  veiculo_chassi=dados.veiculo_chassi,
+                  vendedor_cpf=user.cpf)  <span class="com"># ← segurança</span>
+
+    <span class="com"># 5) Baixa automática no estoque</span>
+    v.situacao = <span class="cls">SituacaoVeiculo</span>.VENDIDO
+
+    <span class="com"># 6) Atômico: ou tudo, ou nada</span>
+    db.add(t); db.commit(); db.refresh(t)
+    <span class="kw">return</span> t</pre>
+</section>
+
+<!-- ============================================================ -->
+<!-- 33 — REGRA: DEVOLUÇÃO + OS                                    -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Regras de negócio</span>
+    <h2>Devolução e <strong>ordem de serviço</strong></h2>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h4>Devolução</h4>
+      <pre class="code" style="font-size:12px"><span class="com"># Reverte a venda</span>
+v.situacao = <span class="cls">SituacaoVeiculo</span>.DISPONIVEL
+db.add(<span class="cls">Transacao</span>(tipo=DEVOLUCAO, ...))
+db.commit()</pre>
+      <div class="card mt-2">
+        <div class="ico">↩️</div>
+        <h3>Efeito</h3>
+        <p>O veículo volta para <span class="hl">disponível</span> e fica registrado no histórico como devolução.</p>
+      </div>
+    </div>
+    <div class="col">
+      <h4>Ordem de Serviço</h4>
+      <pre class="code" style="font-size:12px"><span class="com"># Abrir</span>
+os = <span class="cls">OrdemServico</span>(status=<span class="cls">StatusOS</span>.ABERTA,
+    mecanico_cpf=user.cpf, ...)
+
+<span class="com"># Fechar</span>
+<span class="kw">if</span> os.status == <span class="cls">StatusOS</span>.FECHADA:
+    <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">400</span>, <span class="str">"Já fechada"</span>)
+os.valor = dados.valor
+os.status = <span class="cls">StatusOS</span>.FECHADA
+os.data_fechamento = datetime.utcnow()</pre>
+      <div class="card mt-2">
+        <div class="ico">🔧</div>
+        <h3>Efeito</h3>
+        <p>Só OS abertas podem ser fechadas. Guarda valor final e data/hora exata do fechamento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 34 — SEÇÃO: EXECUÇÃO                                          -->
+<!-- ============================================================ -->
+<section class="slide section-slide">
+  <div class="num">09</div>
+  <h2>Como <strong>executar</strong></h2>
+  <p class="lead mt-2">Do zero ao sistema rodando.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 35 — SETUP                                                    -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Execução</span>
+    <h2>Passo a <strong>passo</strong></h2>
+  </div>
+  <div class="row">
+    <div class="col">
+      <pre class="code"><span class="com"># 1. Dependências do sistema</span>
+sudo apt install python3 python3-venv python3-pip mysql-server
+
+<span class="com"># 2. Iniciar MySQL</span>
+sudo systemctl start mysql
+
+<span class="com"># 3. Criar banco</span>
+mysql -u root -p -e <span class="str">"CREATE DATABASE concessionaria"</span>
+
+<span class="com"># 4. Ambiente virtual</span>
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+<span class="com"># 5. Criar tabelas e ADM padrão</span>
+python -c <span class="str">"from app.main import app"</span>
+
+<span class="com"># 6. Subir o servidor</span>
+uvicorn app.main:app --reload</pre>
+    </div>
+    <div class="col">
+      <div class="card">
+        <div class="ico">🌐</div>
+        <h3>Acesso</h3>
+        <p><code>http://localhost:8000</code></p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🔑</div>
+        <h3>Credenciais de teste</h3>
+        <p>
+        <strong>ADM:</strong> <code>00000000000</code> / <code>admin123</code><br>
+        <strong>Vendedor:</strong> <code>11111111111</code> / <code>venda123</code><br>
+        <strong>Oficina:</strong> <code>22222222222</code> / <code>mec123</code>
+        </p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">📘</div>
+        <h3>Documentação da API</h3>
+        <p><code>http://localhost:8000/docs</code></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 36 — CHECKLIST DE REQUISITOS                                  -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Requisitos</span>
+    <h2>Tudo o que foi <strong>pedido</strong></h2>
+  </div>
+  <table>
+    <thead><tr><th>Requisito</th><th style="width:180px">Perfil</th><th style="width:100px">Status</th></tr></thead>
+    <tbody>
+      <tr><td>Gerenciar funcionários (CRUD)</td><td><span class="badge badge-adm">ADM</span></td><td class="tag-ok">✔ Feito</td></tr>
+      <tr><td>Gerenciar estoque de veículos (CRUD)</td><td><span class="badge badge-adm">ADM</span></td><td class="tag-ok">✔ Feito</td></tr>
+      <tr><td>Histórico de transações (receitas/despesas)</td><td><span class="badge badge-adm">ADM</span></td><td class="tag-ok">✔ Feito</td></tr>
+      <tr><td>Histórico de ordens de serviço</td><td><span class="badge badge-adm">ADM</span></td><td class="tag-ok">✔ Feito</td></tr>
+      <tr><td>Histórico de clientes</td><td><span class="badge badge-adm">ADM</span></td><td class="tag-ok">✔ Feito</td></tr>
+      <tr><td>Gerenciar clientes (CRUD)</td><td><span class="badge badge-vend">Vendedor</span></td><td class="tag-ok">✔ Feito</td></tr>
+      <tr><td>Venda e devolução</td><td><span class="badge badge-vend">Vendedor</span></td><td class="tag-ok">✔ Feito</td></tr>
+      <tr><td>Histórico de vendas próprias</td><td><span class="badge badge-vend">Vendedor</span></td><td class="tag-ok">✔ Feito</td></tr>
+      <tr><td>Consultar estoque</td><td><span class="badge badge-vend">Vend</span> <span class="badge badge-ofic">Ofic</span></td><td class="tag-ok">✔ Feito</td></tr>
+      <tr><td>Abrir/fechar OS</td><td><span class="badge badge-ofic">Oficina</span></td><td class="tag-ok">✔ Feito</td></tr>
+      <tr><td>Histórico de OS próprias</td><td><span class="badge badge-ofic">Oficina</span></td><td class="tag-ok">✔ Feito</td></tr>
+      <tr><td>Login com CPF</td><td><span class="badge badge-get">Todos</span></td><td class="tag-ok">✔ Feito</td></tr>
+      <tr><td>Chave primária = CPF</td><td><span class="badge badge-get">Todos</span></td><td class="tag-ok">✔ Feito</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<!-- 37 — APRENDIZADOS                                             -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Conclusão</span>
+    <h2>O que <strong>aprendemos</strong></h2>
+  </div>
+  <div class="grid-3">
+    <div class="card"><div class="ico">🐍</div><h3>FastAPI avançado</h3><p>Routers, dependências, injeção, OpenAPI automático.</p></div>
+    <div class="card"><div class="ico">🗄️</div><h3>Modelagem relacional</h3><p>PK natural (CPF, chassi), FKs, integridade.</p></div>
+    <div class="card"><div class="ico">🔐</div><h3>Segurança real</h3><p>JWT + bcrypt + RBAC (permissões por cargo).</p></div>
+    <div class="card"><div class="ico">🏗️</div><h3>Arquitetura limpa</h3><p>Separação por responsabilidades.</p></div>
+    <div class="card"><div class="ico">🎨</div><h3>Design premium</h3><p>CSS moderno sem frameworks.</p></div>
+    <div class="card"><div class="ico">📚</div><h3>Documentação</h3><p>Swagger, REST Client, comentários no código.</p></div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- EXTRA 1 — database.py em detalhes                             -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Arquivo · database.py</span>
+    <h2>A conexão com o <strong>MySQL</strong></h2>
+    <p class="sub">Responsável por criar a engine, gerenciar o pool de conexões e fornecer sessões às rotas.</p>
+  </div>
+  <div class="row">
+    <div class="col">
+      <pre class="code"><span class="com"># 1. Settings — lê as variáveis do arquivo .env automaticamente</span>
+<span class="kw">class</span> <span class="cls">Settings</span>(<span class="cls">BaseSettings</span>):
+    DATABASE_URL: str
+    SECRET_KEY: str
+    ALGORITHM: str = <span class="str">"HS256"</span>
+    ACCESS_TOKEN_EXPIRE_MINUTES: <span class="cls">int</span> = <span class="num">480</span>
+
+    <span class="kw">class</span> <span class="cls">Config</span>:
+        env_file = <span class="str">".env"</span>
+
+settings = <span class="cls">Settings</span>()
+
+<span class="com"># 2. Engine — fábrica de conexões com pool automático</span>
+engine = create_engine(settings.DATABASE_URL, pool_pre_ping=<span class="kw">True</span>)
+
+<span class="com"># 3. SessionLocal — fábrica de sessões (1 por requisição)</span>
+SessionLocal = sessionmaker(autocommit=<span class="kw">False</span>, autoflush=<span class="kw">False</span>, bind=engine)
+
+<span class="com"># 4. Base — classe mãe de todos os models</span>
+<span class="cls">Base</span> = declarative_base()
+
+<span class="com"># 5. Dependência do FastAPI</span>
+<span class="kw">def</span> <span class="fn">get_db</span>():
+    db = <span class="cls">SessionLocal</span>()
+    <span class="kw">try</span>:
+        <span class="kw">yield</span> db
+    <span class="kw">finally</span>:
+        db.close()</pre>
+    </div>
+    <div class="col">
+      <div class="card">
+        <div class="ico">🔌</div>
+        <h3>Engine</h3>
+        <p>É o "motor" que fala com o MySQL. Faz o pool de conexões (reaproveita em vez de abrir/fechar a cada request). <code>pool_pre_ping=True</code> testa a conexão antes de usar.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">📦</div>
+        <h3>SessionLocal</h3>
+        <p>Fábrica de sessões. Cada requisição HTTP ganha a sua própria sessão — isolamento garantido.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🧬</div>
+        <h3>Base</h3>
+        <p>Classe mãe. Toda tabela em <code>models.py</code> herda dela, para o SQLAlchemy saber o que precisa criar no banco.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">♻️</div>
+        <h3>get_db() — yield</h3>
+        <p>O <code>yield</code> entrega a sessão à rota e garante que ela seja fechada no <code>finally</code>, mesmo se a rota der erro.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- EXTRA 2 — models.py em detalhes                               -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Arquivo · models.py</span>
+    <h2>As 5 tabelas <strong>ORM</strong></h2>
+    <p class="sub">Cada classe Python vira uma tabela no MySQL. Nada de SQL manual.</p>
+  </div>
+  <div class="grid-4">
+    <div class="card">
+      <span class="badge badge-adm">1</span>
+      <h3 class="mt-2">Funcionario</h3>
+      <p><strong>PK:</strong> cpf</p>
+      <p style="font-size:12px;color:var(--text-mute);margin-top:8px">nome · sobrenome · data_nascimento · email · telefone · senha_hash · cargo · data_cadastro</p>
+    </div>
+    <div class="card">
+      <span class="badge badge-vend">2</span>
+      <h3 class="mt-2">Cliente</h3>
+      <p><strong>PK:</strong> cpf</p>
+      <p style="font-size:12px;color:var(--text-mute);margin-top:8px">nome · sobrenome · data_nascimento · email · telefone · data_cadastro · <strong>FK vendedor_cpf</strong></p>
+    </div>
+    <div class="card">
+      <span class="badge badge-get">3</span>
+      <h3 class="mt-2">Veiculo</h3>
+      <p><strong>PK:</strong> chassi (17)</p>
+      <p style="font-size:12px;color:var(--text-mute);margin-top:8px">marca · modelo · ano · categoria · situacao · preco · placa · quilometragem · descricao</p>
+    </div>
+    <div class="card">
+      <span class="badge badge-ofic">4</span>
+      <h3 class="mt-2">Transacao</h3>
+      <p><strong>PK:</strong> id (auto)</p>
+      <p style="font-size:12px;color:var(--text-mute);margin-top:8px">tipo · valor · data · descricao · <strong>FK cliente</strong> · <strong>FK veiculo</strong> · <strong>FK vendedor</strong></p>
+    </div>
+    <div class="card">
+      <span class="badge badge-adm">5</span>
+      <h3 class="mt-2">OrdemServico</h3>
+      <p><strong>PK:</strong> id (auto)</p>
+      <p style="font-size:12px;color:var(--text-mute);margin-top:8px">descricao · valor · status · data_abertura · data_fechamento · <strong>FK cliente</strong> · <strong>FK veiculo</strong> · <strong>FK mecanico</strong></p>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col">
+      <pre class="code"><span class="kw">class</span> <span class="cls">Funcionario</span>(<span class="cls">Base</span>):
+    __tablename__ = <span class="str">"funcionarios"</span>
+    cpf = <span class="cls">Column</span>(<span class="cls">String</span>(<span class="num">11</span>), primary_key=<span class="kw">True</span>, index=<span class="kw">True</span>)
+    nome = <span class="cls">Column</span>(<span class="cls">String</span>(<span class="num">80</span>), nullable=<span class="kw">False</span>)
+    email = <span class="cls">Column</span>(<span class="cls">String</span>(<span class="num">120</span>), unique=<span class="kw">True</span>, nullable=<span class="kw">False</span>)
+    senha_hash = <span class="cls">Column</span>(<span class="cls">String</span>(<span class="num">255</span>), nullable=<span class="kw">False</span>)
+    cargo = <span class="cls">Column</span>(<span class="cls">Enum</span>(<span class="cls">CargoEnum</span>), nullable=<span class="kw">False</span>)
+    data_cadastro = <span class="cls">Column</span>(<span class="cls">DateTime</span>, server_default=func.now())</pre>
+    </div>
+    <div class="col">
+      <div class="card">
+        <div class="ico">🔑</div>
+        <h3>Chave primária = CPF / Chassi</h3>
+        <p>Usamos identificadores <strong>naturais do domínio</strong> em vez de criar um <code>id</code> artificial. CPF é único por lei; chassi também.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🔗</div>
+        <h3>ForeignKey</h3>
+        <p><code>Column(String(11), ForeignKey("funcionarios.cpf"))</code> cria uma relação garantida pelo MySQL. Não deixa inserir referência inexistente.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🎯</div>
+        <h3>Enums no banco</h3>
+        <p><code>Enum(CargoEnum)</code> vira <code>ENUM('adm','vendedor','oficina')</code>. O MySQL rejeita qualquer valor fora disso — segurança de dados em nível de schema.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- EXTRA 3 — schemas.py em detalhes                              -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Arquivo · schemas.py</span>
+    <h2>Contratos de <strong>dados</strong> (Pydantic)</h2>
+    <p class="sub">Define o formato JSON aceito e devolvido por cada endpoint. Validação automática.</p>
+  </div>
+  <div class="row">
+    <div class="col">
+      <pre class="code"><span class="com"># 1. BASE — campos comuns a Create e Out</span>
+<span class="kw">class</span> <span class="cls">VeiculoBase</span>(<span class="cls">BaseModel</span>):
+    chassi: str = <span class="cls">Field</span>(..., min_length=<span class="num">17</span>, max_length=<span class="num">17</span>)
+    marca: str
+    modelo: str
+    ano: <span class="cls">int</span>
+    categoria: <span class="cls">CategoriaVeiculo</span>
+    preco: <span class="cls">Decimal</span>
+    placa: <span class="cls">Optional</span>[str] = <span class="kw">None</span>
+    quilometragem: <span class="cls">int</span> = <span class="num">0</span>
+
+<span class="com"># 2. CREATE — payload do POST</span>
+<span class="kw">class</span> <span class="cls">VeiculoCreate</span>(<span class="cls">VeiculoBase</span>):
+    <span class="kw">pass</span>
+
+<span class="com"># 3. UPDATE — payload do PUT (todos opcionais)</span>
+<span class="kw">class</span> <span class="cls">VeiculoUpdate</span>(<span class="cls">BaseModel</span>):
+    marca: <span class="cls">Optional</span>[str] = <span class="kw">None</span>
+    modelo: <span class="cls">Optional</span>[str] = <span class="kw">None</span>
+    situacao: <span class="cls">Optional</span>[<span class="cls">SituacaoVeiculo</span>] = <span class="kw">None</span>
+
+<span class="com"># 4. OUT — resposta da API</span>
+<span class="kw">class</span> <span class="cls">VeiculoOut</span>(<span class="cls">VeiculoBase</span>):
+    situacao: <span class="cls">SituacaoVeiculo</span>
+    <span class="kw">class</span> <span class="cls">Config</span>: from_attributes = <span class="kw">True</span></pre>
+    </div>
+    <div class="col">
+      <div class="card">
+        <div class="ico">📋</div>
+        <h3>Por que 4 versões?</h3>
+        <ul style="padding-left:18px;color:var(--text-dim);font-size:14px;line-height:1.9;margin-top:8px">
+          <li><strong>Base</strong> — campos comuns (evita repetição)</li>
+          <li><strong>Create</strong> — o que o cliente manda no POST</li>
+          <li><strong>Update</strong> — tudo opcional (atualiza só o que veio)</li>
+          <li><strong>Out</strong> — o que a API devolve (com campos gerados)</li>
+        </ul>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">✅</div>
+        <h3>Validação grátis</h3>
+        <p>Se o cliente mandar chassi com 10 caracteres, o FastAPI devolve <span class="hl">HTTP 422</span> antes da rota executar. Nada de validação manual com <code>if/else</code>.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">📖</div>
+        <h3>Swagger automático</h3>
+        <p>Os schemas alimentam <code>/docs</code>. A documentação da API é gerada automaticamente, mostrando exemplo de payload e resposta.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🔒</div>
+        <h3>Nunca expor hash</h3>
+        <p><code>FuncionarioOut</code> não tem campo <code>senha_hash</code>. A senha nunca sai do servidor, nem em resposta.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- EXTRA 4 — auth.py em detalhes                                 -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Arquivo · auth.py</span>
+    <h2>Autenticação e <strong>JWT</strong></h2>
+    <p class="sub">Hash de senhas, criação de tokens e extração do usuário autenticado.</p>
+  </div>
+  <div class="row">
+    <div class="col">
+      <pre class="code"><span class="com"># 1. Contexto bcrypt (hash de senha)</span>
+pwd_context = <span class="cls">CryptContext</span>(schemes=[<span class="str">"bcrypt"</span>], deprecated=<span class="str">"auto"</span>)
+
+<span class="kw">def</span> <span class="fn">hash_senha</span>(s): <span class="kw">return</span> pwd_context.hash(s)
+<span class="kw">def</span> <span class="fn">verificar_senha</span>(s, h): <span class="kw">return</span> pwd_context.verify(s, h)
+
+<span class="com"># 2. OAuth2 scheme — extrai o token do header Authorization</span>
+oauth2_scheme = <span class="cls">OAuth2PasswordBearer</span>(tokenUrl=<span class="str">"/auth/login"</span>)
+
+<span class="com"># 3. Criação do token JWT</span>
+<span class="kw">def</span> <span class="fn">criar_token</span>(data: dict) -> str:
+    payload = data.copy()
+    payload[<span class="str">"exp"</span>] = datetime.utcnow() + timedelta(minutes=<span class="num">480</span>)
+    <span class="kw">return</span> jwt.encode(payload, SECRET_KEY, algorithm=<span class="str">"HS256"</span>)
+
+<span class="com"># 4. Extrai o usuário autenticado de cada requisição</span>
+<span class="kw">def</span> <span class="fn">get_current_user</span>(token: str = <span class="cls">Depends</span>(oauth2_scheme),
+                     db: <span class="cls">Session</span> = <span class="cls">Depends</span>(get_db)):
+    <span class="kw">try</span>:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[<span class="str">"HS256"</span>])
+        cpf = payload.get(<span class="str">"sub"</span>)
+    <span class="kw">except</span> <span class="cls">JWTError</span>:
+        <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">401</span>, <span class="str">"Credenciais inválidas"</span>)
+    user = db.query(<span class="cls">Funcionario</span>).filter(<span class="cls">Funcionario</span>.cpf == cpf).first()
+    <span class="kw">if</span> <span class="kw">not</span> user: <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">401</span>)
+    <span class="kw">return</span> user</pre>
+    </div>
+    <div class="col">
+      <div class="card">
+        <div class="ico">🔐</div>
+        <h3>bcrypt</h3>
+        <p>Algoritmo <strong>lento de propósito</strong>. Testa apenas centenas de senhas/segundo contra milhões do MD5. Cada hash tem salt aleatório → a mesma senha gera hashes diferentes.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🎫</div>
+        <h3>JWT — crachá digital</h3>
+        <p>String dividida em <strong>header.payload.signature</strong>. Carrega CPF (<code>sub</code>), cargo e expiração. Assinado com SECRET_KEY → impossível forjar.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🕵️</div>
+        <h3>get_current_user</h3>
+        <p>Em cada requisição: decodifica o JWT, valida a assinatura, checa expiração, busca o usuário no banco e devolve. Se qualquer passo falha → HTTP 401.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- EXTRA 5 — dependencies.py em detalhes                         -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Arquivo · dependencies.py</span>
+    <h2>Autorização por <strong>cargo</strong></h2>
+    <p class="sub">Depois de saber QUEM é o usuário, precisamos saber SE ele pode fazer aquilo.</p>
+  </div>
+  <div class="row">
+    <div class="col">
+      <pre class="code"><span class="kw">def</span> <span class="fn">require_adm</span>(user = <span class="cls">Depends</span>(get_current_user)):
+    <span class="kw">if</span> user.cargo != <span class="cls">CargoEnum</span>.ADM:
+        <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">403</span>, <span class="str">"Acesso restrito a ADM"</span>)
+    <span class="kw">return</span> user
+
+<span class="kw">def</span> <span class="fn">require_vendedor</span>(user = <span class="cls">Depends</span>(get_current_user)):
+    <span class="kw">if</span> user.cargo <span class="kw">not in</span> (<span class="cls">CargoEnum</span>.VENDEDOR, <span class="cls">CargoEnum</span>.ADM):
+        <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">403</span>, <span class="str">"Acesso restrito a Vendedor"</span>)
+    <span class="kw">return</span> user
+
+<span class="kw">def</span> <span class="fn">require_oficina</span>(user = <span class="cls">Depends</span>(get_current_user)):
+    <span class="kw">if</span> user.cargo <span class="kw">not in</span> (<span class="cls">CargoEnum</span>.OFICINA, <span class="cls">CargoEnum</span>.ADM):
+        <span class="kw">raise</span> <span class="cls">HTTPException</span>(<span class="num">403</span>, <span class="str">"Acesso restrito à Oficina"</span>)
+    <span class="kw">return</span> user</pre>
+    </div>
+    <div class="col">
+      <div class="card">
+        <div class="ico">🔽</div>
+        <h3>Cascata de validação</h3>
+        <pre class="code" style="font-size:11px;padding:12px;margin-top:10px">require_adm
+   ↓
+get_current_user
+   ↓
+jwt.decode(token)
+   ↓
+query(Funcionario)</pre>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🎯</div>
+        <h3>Uso nas rotas</h3>
+        <pre class="code" style="font-size:11px;padding:12px;margin-top:10px">@router.post(<span class="str">"/funcionarios/"</span>)
+<span class="kw">def</span> <span class="fn">criar</span>(...,
+    _=<span class="cls">Depends</span>(require_adm)):
+    ...</pre>
+        <p style="font-size:13px;margin-top:8px">O <code>_</code> significa "só quero a proteção, não o retorno".</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🚫</div>
+        <h3>401 vs 403</h3>
+        <p><strong>401</strong> = não autenticado (token inválido/ausente).<br><strong>403</strong> = autenticado, mas sem permissão para essa rota.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- EXTRA 6 — routers em detalhes                                 -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Arquivo · routers/</span>
+    <h2>Os 6 <strong>routers</strong></h2>
+    <p class="sub">Cada arquivo cuida de uma área da API. Tudo segue o mesmo padrão: prefixo, tags, dependências e response_model.</p>
+  </div>
+  <table>
+    <thead><tr><th>Arquivo</th><th>Prefixo</th><th>Responsabilidade</th><th>Endpoints</th></tr></thead>
+    <tbody>
+      <tr><td><code>auth_router.py</code></td><td><code>/auth</code></td><td>Login e geração de JWT</td><td>1</td></tr>
+      <tr><td><code>funcionarios.py</code></td><td><code>/funcionarios</code></td><td>CRUD de funcionários (só ADM)</td><td>4</td></tr>
+      <tr><td><code>veiculos.py</code></td><td><code>/veiculos</code></td><td>CRUD + consulta de estoque</td><td>5</td></tr>
+      <tr><td><code>clientes.py</code></td><td><code>/clientes</code></td><td>CRUD de clientes</td><td>4</td></tr>
+      <tr><td><code>transacoes.py</code></td><td><code>/transacoes</code></td><td>Vendas, devoluções, financeiro</td><td>5</td></tr>
+      <tr><td><code>ordens_servico.py</code></td><td><code>/ordens-servico</code></td><td>Abrir, listar e fechar OS</td><td>4</td></tr>
+    </tbody>
+  </table>
+  <div class="grid-3 mt-4">
+    <div class="card">
+      <div class="ico">🎯</div>
+      <h3>Padrão de um router</h3>
+      <pre class="code" style="font-size:11px;padding:12px;margin-top:10px">router = APIRouter(
+    prefix=<span class="str">"/veiculos"</span>,
+    tags=[<span class="str">"Veículos"</span>]
+)
+
+@router.post(<span class="str">"/"</span>,
+    response_model=<span class="cls">VeiculoOut</span>,
+    status_code=<span class="num">201</span>)
+<span class="kw">def</span> <span class="fn">criar</span>(...):
+    ...</pre>
+    </div>
+    <div class="card">
+      <div class="ico">🔒</div>
+      <h3>Proteção consistente</h3>
+      <p>Toda rota sensível tem um <code>Depends(require_xxx)</code>. Sem isso, o endpoint fica público.</p>
+    </div>
+    <div class="card">
+      <div class="ico">📘</div>
+      <h3>Tags no Swagger</h3>
+      <p>O <code>tags=["Veículos"]</code> agrupa no <code>/docs</code>. Fica organizado por área em vez de uma lista enorme.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- EXTRA 7 — main.py em detalhes                                 -->
+<!-- ============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="tag">Arquivo · main.py</span>
+    <h2>O ponto de <strong>entrada</strong></h2>
+    <p class="sub">Registra tudo e sobe o servidor. É o arquivo que o Uvicorn executa.</p>
+  </div>
+  <div class="row">
+    <div class="col">
+      <pre class="code"><span class="com"># 1. Cria as tabelas (lê models.py) se não existirem</span>
+<span class="cls">Base</span>.metadata.create_all(bind=engine)
+
+<span class="com"># 2. Instancia o app com metadados para o Swagger</span>
+app = <span class="cls">FastAPI</span>(
+    title=<span class="str">"MotoPrime API"</span>,
+    version=<span class="str">"1.0.0"</span>,
+    description=<span class="str">"Sistema de gestão para concessionária"</span>
+)
+
+<span class="com"># 3. Serve arquivos estáticos (/static/css/app.css, etc.)</span>
+app.mount(<span class="str">"/static"</span>, <span class="cls">StaticFiles</span>(directory=<span class="str">"app/static"</span>))
+
+<span class="com"># 4. Registra os 6 routers (todos os endpoints da API)</span>
+app.include_router(auth_router.router)
+app.include_router(funcionarios.router)
+app.include_router(veiculos.router)
+app.include_router(clientes.router)
+app.include_router(transacoes.router)
+app.include_router(ordens_servico.router)
+
+<span class="com"># 5. Rotas de página (HTML estático, não JSON)</span>
+<span class="kw">@app</span>.get(<span class="str">"/"</span>, include_in_schema=<span class="kw">False</span>)
+<span class="kw">def</span> <span class="fn">root</span>():
+    <span class="kw">return</span> <span class="cls">FileResponse</span>(<span class="str">"app/static/index.html"</span>)
+
+<span class="kw">@app</span>.get(<span class="str">"/dashboard"</span>, include_in_schema=<span class="kw">False</span>)
+<span class="kw">def</span> <span class="fn">dashboard_page</span>():
+    <span class="kw">return</span> <span class="cls">FileResponse</span>(<span class="str">"app/static/dashboard.html"</span>)
+
+<span class="com"># ... + /funcionarios, /veiculos, /clientes, /transacoes, /ordens</span></pre>
+    </div>
+    <div class="col">
+      <div class="card">
+        <div class="ico">🏁</div>
+        <h3>É o arquivo que o Uvicorn roda</h3>
+        <pre class="code" style="font-size:11px;padding:10px;margin-top:8px">uvicorn app.main:app --reload</pre>
+        <p style="font-size:13px;margin-top:8px">O <code>app.main:app</code> significa "no módulo app/main.py, a variável <code>app</code>".</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">🌐</div>
+        <h3>API vs Páginas</h3>
+        <p><strong>Endpoints da API</strong> (via routers) devolvem JSON.<br><strong>Rotas de página</strong> devolvem arquivo HTML. Ambas convivem no mesmo app.</p>
+      </div>
+      <div class="card mt-2">
+        <div class="ico">📊</div>
+        <h3>Swagger automático</h3>
+        <p>Como os routers têm tags e schemas, o FastAPI gera <code>/docs</code> e <code>/redoc</code> sem esforço.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- 38 — FIM                                                      -->
+<!-- ============================================================ -->
+<section class="slide title-slide">
+  <div class="mark">
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="lg3" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#00e5a0"/><stop offset="1" stop-color="#00d4ff"/>
+      </linearGradient></defs>
+      <path d="M8 30 L8 10 L20 24 L32 10 L32 30" stroke="url(#lg3)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="32" cy="10" r="2.6" fill="#00e5a0"/>
+    </svg>
+  </div>
+  <h1>Obrigado!</h1>
+  <p class="sub">Perguntas?</p>
+</section>
+
+</div>
+
+<div class="nav">
+  <button onclick="prev()" title="Anterior (←)">← Anterior</button>
+  <div class="progress"><div id="prog"></div></div>
+  <button onclick="next()" title="Próximo (→)" class="primary">Próximo →</button>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let idx = 0;
+
+document.getElementById('tot').textContent = total;
+
+function go(n){
+  if(n < 0) n = 0;
+  if(n >= total) n = total - 1;
+  slides[idx].classList.remove('active');
+  idx = n;
+  slides[idx].classList.add('active');
+  document.getElementById('cur').textContent = idx + 1;
+  document.getElementById('prog').style.width = ((idx + 1) / total * 100) + '%';
+  slides[idx].scrollTop = 0;
+}
+
+function next(){ go(idx + 1); }
+function prev(){ go(idx - 1); }
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+  if(e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+  if(e.key === 'Home') go(0);
+  if(e.key === 'End') go(total - 1);
+  if(e.key === 'f' || e.key === 'F') {
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+
+// Clique nas laterais também avança
+document.getElementById('deck').addEventListener('click', e => {
+  if(e.target.closest('.card') || e.target.closest('a') || e.target.closest('button')) return;
+  const x = e.clientX;
+  if(x < window.innerWidth * 0.3) prev();
+  else if(x > window.innerWidth * 0.7) next();
+});
+
+go(0);
+</script>
+</body>
+</html>
