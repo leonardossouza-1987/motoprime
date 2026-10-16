@@ -52,6 +52,28 @@ app.include_router(ordens_servico.router)   # /ordens-servico/*
 # ---------- ROTAS DE PÁGINA (HTML) ----------
 # Cada rota devolve um arquivo HTML estático.
 
+@app.get("/static/css/app.css", include_in_schema=False)
+def css_served():
+    """Serve o CSS sem cache para forçar atualização após deploy."""
+    import os
+    path = "app/static/css/app.css"
+    resp = FileResponse(path, media_type="text/css")
+    resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    resp.headers["Pragma"] = "no-cache"
+    resp.headers["Expires"] = "0"
+    return resp
+
+
+@app.get("/sw.js", include_in_schema=False)
+def service_worker():
+    return FileResponse("app/static/sw.js", media_type="application/javascript")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return FileResponse("app/static/icon.png")
+
+
 @app.get("/", include_in_schema=False)
 def root():
     """Tela de login."""

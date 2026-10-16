@@ -142,6 +142,9 @@ class TransacaoOut(BaseModel):
     cliente_cpf: Optional[str]
     veiculo_chassi: Optional[str]
     vendedor_cpf: Optional[str]
+    vendedor_nome: Optional[str] = None
+    cliente_nome: Optional[str] = None
+    veiculo_desc: Optional[str] = None
     class Config: from_attributes = True
 
 

@@ -213,7 +213,7 @@ nav { flex: 1; padding: 0 12px; display: flex; flex-direction: column; gap: 2px;
 .stat.warning::after { background: radial-gradient(circle, rgba(255,181,71,0.3), transparent 70%); }
 .stat-icon { font-size: 22px; margin-bottom: 16px; opacity: 0.9; }
 .stat-value { font-size: 36px; font-weight: 300; letter-spacing: -0.03em; line-height: 1; margin-bottom: 8px; }
-.stat-label { font-size: 11px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
+.stat-label { font-size: 13px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
 
 /* ---------- Card ---------- */
 .card {
@@ -237,24 +237,29 @@ nav { flex: 1; padding: 0 12px; display: flex; flex-direction: column; gap: 2px;
 
 /* ---------- Table ---------- */
 .table-wrap { overflow-x: auto; border-radius: var(--radius-sm); }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table { width: 100%; border-collapse: collapse; font-size: 16px; }
 thead th {
-  text-align: left; padding: 12px 16px;
-  font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
-  color: var(--text-mute); font-weight: 600;
+  text-align: left;
+  padding: 16px 20px;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  font-weight: 700;
   border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
 }
-tbody td { padding: 16px; border-bottom: 1px solid var(--border); color: var(--text-dim); }
+tbody td { padding: 18px 18px; border-bottom: 1px solid var(--border); color: var(--text-dim); font-size: 16px; }
 tbody tr { transition: background 0.15s; }
 tbody tr:hover { background: rgba(255,255,255,0.02); }
 tbody td strong, tbody td b { color: var(--text); font-weight: 600; }
-.mono { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; font-size: 12px; color: var(--text-dim); }
+.mono { font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; font-size: 15px; color: var(--text-dim); }
 
 /* ---------- Badges ---------- */
 .badge {
   display: inline-flex; align-items: center; gap: 5px;
-  padding: 4px 10px; border-radius: var(--radius-pill);
-  font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: var(--radius-pill);
+  font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 .badge-disponivel, .badge-success, .badge-novo { background: rgba(0,229,160,0.1); color: var(--accent); }

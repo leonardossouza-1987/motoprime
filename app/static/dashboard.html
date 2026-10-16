@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<link rel="icon" type="image/png" href="/static/icon.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard — MotoPrime</title>
@@ -148,9 +149,18 @@ async function loadUltimas(){
     }
     var rows = items.slice(0,8).map(function(t){
       var badge = t.tipo==='venda' ? 'badge-disponivel' : 'badge-reservado';
-      return '<tr><td><span class="badge '+badge+'">'+t.tipo+'</span></td><td><strong>'+fmtMoney(t.valor)+'</strong></td><td>'+t.cliente_cpf+'</td><td class="mono">'+t.veiculo_chassi+'</td><td>'+fmtDT(t.data)+'</td></tr>';
+      var vendedorNome = t.vendedor_nome || '—';
+      var vendedorCpf = t.vendedor_cpf || '—';
+      return '<tr>'+
+        '<td><span class="badge '+badge+'">'+t.tipo+'</span></td>'+
+        '<td><strong>'+fmtMoney(t.valor)+'</strong></td>'+
+        '<td>'+(t.cliente_nome || t.cliente_cpf || '—')+'</td>'+
+        '<td>'+(t.veiculo_desc || '—')+'<br><small class="mono" style="color:var(--text-mute);font-size:10px">'+(t.veiculo_chassi||'')+'</small></td>'+
+        '<td><strong>'+vendedorNome+'</strong><br><small class="mono" style="color:var(--text-mute);font-size:10px">'+vendedorCpf+'</small></td>'+
+        '<td>'+fmtDT(t.data)+'</td>'+
+      '</tr>';
     }).join('');
-    el.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Tipo</th><th>Valor</th><th>Cliente</th><th>Veículo</th><th>Data</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+    el.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Tipo</th><th>Valor</th><th>Cliente</th><th>Veículo</th><th>Vendedor</th><th>Data</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
   } catch(e){
     el.innerHTML = '<div class="empty"><div class="icon">◌</div><h3>Sem permissão para ver movimentações</h3></div>';
   }
